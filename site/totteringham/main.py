@@ -16,19 +16,57 @@ bp = Blueprint('main', __name__)
 @bp.route('/', methods=['GET'])
 def index():
     if request.method == "GET":
-        afc_past_fix = db.session.query(Fixture).filter(Fixture.event_date<datetime.datetime.now(), Fixture.event_date>'08-05-2022', Fixture.league_id==39).filter(or_(Fixture.home=='42', Fixture.away=='42')).order_by(text("event_date desc")).all()
-        afc_future_fix = db.session.query(Fixture).filter(Fixture.event_date>datetime.datetime.now(), Fixture.league_id==39).filter(or_(Fixture.home=='42', Fixture.away=='42')).order_by(text("event_date desc")).all()
-
-        spuds_past_fix = db.session.query(Fixture).filter(Fixture.event_date<datetime.datetime.now(), Fixture.event_date>'08-05-2022', Fixture.league_id==39).filter(or_(Fixture.home=='47', Fixture.away=='47')).order_by(text("event_date desc")).all()
-        spuds_future_fix = db.session.query(Fixture).filter(Fixture.event_date>datetime.datetime.now(), Fixture.league_id==39).filter(or_(Fixture.home=='47', Fixture.away=='47')).order_by(text("event_date desc")).all()
-
-
+        afc_fix = db.session.query(Fixture).filter(Fixture.event_date>'08-05-2022', Fixture.league_id==39).filter(or_(Fixture.home=='42', Fixture.away=='42')).order_by(text("event_date desc")).all()
+        spuds_fix = db.session.query(Fixture).filter(Fixture.event_date>'08-05-2022', Fixture.league_id==39).filter(or_(Fixture.home=='47', Fixture.away=='47')).order_by(text("event_date desc")).all()
         
+        afc_future_fix, afc_past_fix = splitFixturesOnToday(afc_fix)
+        spuds_future_fix, spuds_past_fix = splitFixturesOnToday(spuds_fix)
+
+        afc_past_fix = addFixtureWinner(afc_past_fix)
+        spuds_past_fix = addFixtureWinner(spuds_past_fix)
+        # afc_past_fix = db.session.query(Fixture).filter(Fixture.event_date<datetime.datetime.now(), Fixture.event_date>'08-05-2022', Fixture.league_id==39).filter(or_(Fixture.home=='42', Fixture.away=='42')).order_by(text("event_date desc")).all()
+        # afc_future_fix = db.session.query(Fixture).filter(Fixture.event_date>datetime.datetime.now(), Fixture.league_id==39).filter(or_(Fixture.home=='42', Fixture.away=='42')).order_by(text("event_date desc")).all()
+
+        # spuds_past_fix = db.session.query(Fixture).filter(Fixture.event_date<datetime.datetime.now(), Fixture.event_date>'08-05-2022', Fixture.league_id==39).filter(or_(Fixture.home=='47', Fixture.away=='47')).order_by(text("event_date desc")).all()
+        # spuds_future_fix = db.session.query(Fixture).filter(Fixture.event_date>datetime.datetime.now(), Fixture.league_id==39).filter(or_(Fixture.home=='47', Fixture.away=='47')).order_by(text("event_date desc")).all()
+
+        return render_template('index.html', afc_past=[a.toJson() for a in afc_past_fix], afc_future=[a.toJson() for a in afc_future_fix], spuds_past=[a.toJson() for a in spuds_past_fix], spuds_future=[a.toJson() for a in spuds_future_fix], nlds=playedNLD(afc_fix))
 
 
-        return render_template('index.html', afc_past=json.dumps(afc_past_fix), afc_future=afc_future_fix, spuds_past=spuds_past_fix, spuds_future=spuds_future_fix)
+# split fixture lists on today's date
+def splitFixturesOnToday(fixtures):
+    future_fix = []
+    past_fix = []
 
+    for f in fixtures:
+        if f.event_date < datetime.datetime.now():
+            past_fix.append(f)
+        else:
+            future_fix.append(f)
+    return (future_fix, past_fix)
 
+def addFixtureWinner(fixtures):
+    for f in fixtures:
+        if f.status_short not in ['PST', 'CANC']:
+            if f.goals_home > f.goals_away:
+                f.winner = f.home_team.name
+            elif f.goals_home < f.goals_away:
+                f.winner = f.away_team.name
+            else:
+                f.winner = "draw"
+    return fixtures
+
+# how many NLDs played so far?
+def playedNLD(fixtures):
+    nlds = 0
+    for f in fixtures:
+        if f.status_short in "FT, AET, PEN":
+            # if (f.home_team.name in "Arsenal, Tottenham" and f.away_team.name in "Arsenal, Tottenham"): # good
+            # if f.home in [42, 47] and f.away in [42, 47]: # better
+            if sorted([f.home, f.away]) == [42, 47]: # best :D
+                nlds = nlds + 1
+    return nlds
+            
 # @bp.route('/api/fixtures', methods=['GET', 'POST'])
 # def api_fixtures():
 #     if request.method == "POST":

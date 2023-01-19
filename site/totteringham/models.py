@@ -1,6 +1,7 @@
-from sqlalchemy import ARRAY, BigInteger, Boolean, Column, DateTime, ForeignKey, Integer, JSON, String, Table, text
+from sqlalchemy import ARRAY, BigInteger, Boolean, Column, DateTime, ForeignKey, Integer, JSON, String, Table, text, orm
 from sqlalchemy.orm import relationship
 from sqlalchemy.ext.declarative import declarative_base
+from typing import Optional
 
 Base = declarative_base()
 metadata = Base.metadata
@@ -12,6 +13,14 @@ class Country(Base):
     country = Column(String, primary_key=True, unique=True)
     code = Column(String)
     flag = Column(String)
+
+    def toJson(self):
+        classJson = {
+            "country": self.country,
+            "code": self.code,
+            "flag": self.flag,
+        }
+        return classJson
 
 
 t_predictions_2021_2022 = Table(
@@ -35,6 +44,9 @@ class Season(Base):
     __table_args__ = {'schema': 'predictionsbot'}
 
     season = Column(String, primary_key=True)
+    
+    def toJson(self):
+        return {"season": self.season}
 
 
 class User(Base):
@@ -59,6 +71,18 @@ class League(Base):
     country1 = relationship('Country')
     season1 = relationship('Season')
 
+    def toJson(self):
+        classJson = {
+            "league_id": self.league_id,
+            "name": self.name,
+            "season": self.season,
+            "logo": self.logo,
+            "country": self.country,
+            "country1": self.country1.toJson(),
+            "season1": self.season1.toJson(),
+        }
+        return classJson
+
 
 class Team(Base):
     __tablename__ = 'teams'
@@ -71,9 +95,28 @@ class Team(Base):
     nicknames = Column(ARRAY(String(length=50)))
 
     country1 = relationship('Country')
+    def toJson(self):
+        classJson = {
+            "team_id": self.team_id,
+            "name": self.name,
+            "logo": self.logo,
+            "country": self.country,
+            "nicknames": self.nicknames,
+            "country1": self.country1.toJson(),
+        }
+        return classJson
 
 
 class Fixture(Base):
+
+    def __init__(self, data):
+        self.winner = ""
+
+    @orm.reconstructor
+    def init_on_load(self):
+        self.winner = ""
+
+
     __tablename__ = 'fixtures'
     __table_args__ = {'schema': 'predictionsbot'}
 
@@ -97,7 +140,29 @@ class Fixture(Base):
     home_team = relationship('Team', primaryjoin='Fixture.home == Team.team_id')
     league = relationship('League')
     season1 = relationship('Season')
+    winner = str
 
+    def toJson(self):
+        classJson = {
+            "home": self.home,
+            "away": self.away,
+            "fixture_id": self.fixture_id,
+            "league_id": self.league_id,
+            "event_date": self.event_date,
+            "goals_home": self.goals_home,
+            "goals_away": self.goals_away,
+            "new_date": self.new_date,
+            "scorable": self.scorable,
+            "status_short": self.status_short,
+            "notifications_sent": self.notifications_sent,
+            "season": self.season,
+            "away_team": self.away_team.toJson(),
+            "home_team": self.home_team.toJson(),
+            "season1": self.season1.toJson(),
+            "league": self.league.toJson(),
+            "winner": self.winner,
+        }
+        return classJson
 
 class Guild(Base):
     __tablename__ = 'guilds'

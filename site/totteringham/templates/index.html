@@ -104,29 +104,47 @@
     //     });
     // });
 
-    async function spawnFixtures() {
-        var afc_past_fixs = "{{ afc_past|tojson|safe }}";
-        var spuds_past_fixs = "{{ spuds_past }}";
-        console.log(afc_past_fixs);
-        for (var f in afc_past_fixs) {
-        // for (const property in afc_past_fixs) {
-        //     console.log(`${property}: ${afc_past_fixs[property]}`);
-
-        // for (const [key, value] of Object.entries(afc_past_fixs)) {
-            // console.log(f);
-
-            // console.log(key, value);
-
-            var new_p = document.createElement("p");
-            new_p.style.backgroundColor = "palegreen";
-            new_p.innerHTML = f.home + " " + f.goals_home + " - " + f.goals_away + " " + f.away + " | " + f.event_date + " UTC";
-            if (f.goals_home > f.goals_away) {
-                new_p.style.backgroundColor = "palegreen";
+    function getFixtureDecoration(fixtures, team, element) {
+        if (['PST', 'CANC'].includes(f.status_short)) {
+                element.innerHTML = `${f.home_team.name} v. ${f.away_team.name} | ${f.status_short}`;
+                element.setAttribute("class", "badge bg-warning rounded-pill text-dark");
+            } else {
+                element.innerHTML = `${f.home_team.name} ${f.goals_home} - ${f.goals_away} ${f.away_team.name} | ${f.event_date} UTC`;
+                if (f.winner == team) {
+                    element.setAttribute("class", "badge text-bg-success rounded-pill");
+                    // element.style.backgroundColor = "palegreen";
+                } else if (f.winner == "draw") {
+                    element.setAttribute("class", "badge text-bg-secondary rounded-pill");
+                } else {
+                    element.setAttribute("class", "badge text-bg-danger rounded-pill");
+                }
             }
-            // console.log(new_p);
+    }
+
+    async function spawnFixtures() {
+        var afc_past_fixs = {{ afc_past|tojson|safe }};
+        var spuds_past_fixs = {{ spuds_past|tojson|safe }};
+
+        console.log(afc_past_fixs);
+        for (var index in afc_past_fixs) {
+            f = afc_past_fixs[index];
+            var new_p = document.createElement("p");
+
+            getFixtureDecoration(f, "Arsenal", new_p);
+
             afc_past_col.appendChild(new_p);
+            afc_past_col.appendChild(document.createElement('br'));
         }
 
+        for (var index in spuds_past_fixs) {
+            f = spuds_past_fixs[index];
+            var new_p = document.createElement("p");
+
+            getFixtureDecoration(f, "Tottenham", new_p);
+
+            spuds_past_col.appendChild(new_p);
+            spuds_past_col.appendChild(document.createElement('br'));
+        }
 
         // if (e.target.value == "") {
         //     hideElement(fixtureForm.parentElement)

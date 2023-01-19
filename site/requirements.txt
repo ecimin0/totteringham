@@ -5,7 +5,7 @@ inflect==6.0.2
 itsdangerous==2.1.2
 Jinja2==3.1.2
 MarkupSafe==2.1.1
-psycopg2==2.9.5
+psycopg2-binary==2.9.5
 pydantic==1.10.2
 python-dotenv==0.21.0
 sqlacodegen==2.3.0
