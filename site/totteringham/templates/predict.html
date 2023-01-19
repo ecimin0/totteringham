@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+{% block header %}
+{% endblock %}
+{% block content %}
+
+<body>
+    {% for c in countries %}
+        <h3>{{ c.country }}</h3>
+    {% endfor %}
+</body>
+{% endblock %}

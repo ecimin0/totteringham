@@ -1,0 +1,82 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: opa
+  namespace: opa
+  labels:
+    name: opa
+spec:
+  selector:
+    matchLabels:
+      app: opa
+  progressDeadlineSeconds: 600
+  replicas: 1
+  revisionHistoryLimit: 15
+  strategy:
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: opa
+    spec:
+      containers:
+      - name: opa
+        args:
+          - "run"
+          - "--server"
+          - "--config-file"
+          - "/config/config.yaml"
+          - "--addr" 
+          - ":8181" 
+          - "--log-format" 
+          - "json" 
+          # - "--set" 
+          # - "decision_logs.console=true" 
+          # - "--set" 
+          # - "bundles.play.polling.long_polling_timeout_seconds=45" 
+          # - "--set" 
+          # - "services.play.url=https://play.openpolicyagent.org" 
+          # - "--set"
+          # - "https://gitlab.com/ecimino/opa-football/-/jobs/artifacts/master/raw/bundle.tar.gz?job=bundle"
+        image: openpolicyagent/opa:0.46.1
+        imagePullPolicy: Always
+        securityContext:
+          allowPrivilegeEscalation: false
+          privileged: false
+          readOnlyRootFilesystem: false
+        resources:
+          limits:
+            cpu: 50m
+            memory: 256Mi
+          requests:
+            cpu: 50m
+            memory: 256Mi
+        ports:
+        - containerPort: 8181
+          name: https
+          protocol: TCP
+        readinessProbe:
+          httpGet:
+            path: /
+            scheme: HTTP
+            port: 8181
+          initialDelaySeconds: 3
+          periodSeconds: 5
+        livenessProbe:
+          httpGet:
+            path: /
+            scheme: HTTP
+            port: 8181
+          initialDelaySeconds: 3
+          periodSeconds: 5
+        volumeMounts:
+          - name: bundle-config
+            readOnly: true
+            mountPath: /config
+      volumes:
+        - name: bundle-config
+          configMap:
+            name: opa

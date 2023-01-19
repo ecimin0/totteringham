@@ -1,0 +1,60 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: prediction-site
+  namespace: opa
+  labels:
+    name: prediction-site
+spec:
+  selector:
+    matchLabels:
+      app: prediction-site
+  progressDeadlineSeconds: 360
+  replicas: 1
+  revisionHistoryLimit: 15
+  strategy:
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: prediction-site
+    spec:
+      containers:
+      - name: prediction-site
+        image: registry.gitlab.com/ecimino/opa-football/prediction-site:1.0.9
+        imagePullPolicy: Always
+        envFrom:
+        - secretRef:
+            name: sqlalchemy-env
+        securityContext:
+          allowPrivilegeEscalation: false
+          privileged: false
+          readOnlyRootFilesystem: false
+        resources:
+          limits:
+            cpu: 100m
+            memory: 128Mi
+          requests:
+            cpu: 100m
+            memory: 128Mi
+        ports:
+        - containerPort: 5000
+          name: http
+          protocol: TCP
+        livenessProbe:
+          httpGet:
+            path: /
+            port: 5000
+          initialDelaySeconds: 3
+          periodSeconds: 5
+        readinessProbe:
+          httpGet:
+            path: /
+            port: 5000
+          initialDelaySeconds: 5
+          periodSeconds: 5
+      imagePullSecrets:
+        - name: gitlab-auth

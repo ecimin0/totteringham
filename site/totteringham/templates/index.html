@@ -1,0 +1,218 @@
+{% extends 'base.html' %}
+{% block header %}
+{% endblock %}
+{% block content %}
+
+<!-- NLD: bold/italic/underline?
+    win: green
+    draw: yella
+    loss: red -->
+
+<body>
+    <h1 class="text-center" style="margin-top: 20px;">when is st. totteringham's day?</h1>
+    <br>
+    <div class="container text-center">
+        <div class="row">
+            <h3 class="text-center">upcoming fixtures</h3>
+            <div class="col" style="margin-top: 20px;" id="afc_future_col">
+                <h6>Arsenal</h6>
+                <!-- {% for f in afc_future %}
+                {% if f.status_short in 'PST, CANC' %}
+                <p>{{f.home_team.name}} {{f.status_short}} {{f.away_team.name}}</p>
+                {% else %}
+                <p>{{f.home_team.name}} v. {{f.away_team.name}} | {{f.event_date}} UTC</p>
+                {% endif %}
+                {% endfor %} -->
+            </div>
+            <div class="col" style="margin-top: 20px;" id="spuds_future_col">
+                <h6>Tottenham</h6>
+                <!-- {% for f in spuds_future %}
+                {% if f.status_short in 'PST, CANC' %}
+                <p>{{f.home_team.name}} {{f.status_short}} {{f.away_team.name}}</p>
+                {% else %}
+                <p>{{f.home_team.name}} v. {{f.away_team.name}} | {{f.event_date}} UTC</p>
+                {% endif %}
+                {% endfor %} -->
+            </div>
+            <div class="row" style="margin-top: 50px;">
+                <h3 class="text-center">completed fixtures</h3>
+                <div class="col" style="margin-top: 20px;" id="afc_past_col">
+                    <h6>Arsenal</h6>
+                    <!-- {% for f in afc_past %}
+                {% if f.status_short in 'PST, CANC' %}
+                <p>{{f.home_team.name}} {{f.status_short}} {{f.away_team.name}}</p>
+                {% else %}
+                <p>{{f.home_team.name}} {{f.goals_home}} - {{f.goals_away}} {{f.away_team.name}} | {{f.event_date}} UTC</p>
+                {% endif %}
+                {% endfor %} -->
+                </div>
+                <div class="col" style="margin-top: 20px;" id="spuds_past_col">
+                    <h6>Tottenham</h6>
+                    <!-- {% for f in spuds_past %}
+                {% if f.status_short in 'PST, CANC' %}
+                <p>{{f.home_team.name}} {{f.status_short}} {{f.away_team.name}}</p>
+                {% else %}
+                <p>{{f.home_team.name}} {{f.goals_home}} - {{f.goals_away}} {{f.away_team.name}} | {{f.event_date}} UTC</p>
+                {% endif %}
+                {% endfor %} -->
+                </div>
+            </div>
+        </div>
+</body>
+
+
+<script>
+    const afc_future_col = document.getElementById('afc_future_col');
+    const spuds_future_col = document.getElementById('spurs_future_col');
+
+    const afc_past_col = document.getElementById('afc_past_col');
+    const spuds_past_col = document.getElementById('spuds_past_col');
+
+
+    window.onload = spawnFixtures;
+    // const mainTeamForm = document.getElementById('mainTeamForm');
+    // mainTeamForm.addEventListener('input', spawnFixtures);
+
+    // var main_team = mainTeamForm.options[mainTeamForm.selectedIndex].value
+
+    // const fixtureForm = document.getElementById('fixtureForm');
+    // fixtureForm.addEventListener('input', showScorersForm);
+
+    // const addScorers = document.querySelectorAll('[id=addScorer]');
+    // addScorers.forEach(function (elem) {
+    //     elem.addEventListener("click", function () {
+    //         const scorerTableBody = document.getElementById('scorerTableBody');
+    //         var newRow = scorerTableBody.insertRow();
+    //         var nameCell = newRow.insertCell();
+    //         var newName = document.createTextNode(elem.value);
+    //         nameCell.appendChild(newName);
+
+    //         var initGoalsCell = newRow.insertCell();
+    //         var initGoals = document.createTextNode('1');
+    //         initGoalsCell.appendChild(initGoals);
+
+    //         // var isFGSCell = newRow.insertCell();
+    //         // var isFGS = document.createElement("btn");
+    //         // isFGS.innerHTML = "FGS"
+    //         // isFGSCell.appendChild(isFGS);
+
+    //         // var scorerInTable = document.createElement("td");
+    //         // scorerInTable.value = elem.value;
+    //         // // console.log(scorerInTable);
+    //         // // console.log(scorerTableBody.append(scorerInTable));
+    //         // scorerTableBody.appendChild(scorerInTable);
+    //     });
+    // });
+
+    async function spawnFixtures() {
+        var afc_past_fixs = "{{ afc_past|tojson|safe }}";
+        var spuds_past_fixs = "{{ spuds_past }}";
+        console.log(afc_past_fixs);
+        for (var f in afc_past_fixs) {
+        // for (const property in afc_past_fixs) {
+        //     console.log(`${property}: ${afc_past_fixs[property]}`);
+
+        // for (const [key, value] of Object.entries(afc_past_fixs)) {
+            // console.log(f);
+
+            // console.log(key, value);
+
+            var new_p = document.createElement("p");
+            new_p.style.backgroundColor = "palegreen";
+            new_p.innerHTML = f.home + " " + f.goals_home + " - " + f.goals_away + " " + f.away + " | " + f.event_date + " UTC";
+            if (f.goals_home > f.goals_away) {
+                new_p.style.backgroundColor = "palegreen";
+            }
+            // console.log(new_p);
+            afc_past_col.appendChild(new_p);
+        }
+
+
+        // if (e.target.value == "") {
+        //     hideElement(fixtureForm.parentElement)
+        // } else {
+        //     main_team = mainTeamForm.options[mainTeamForm.selectedIndex].value
+        //     // await fetch('/api/fixtures', { 
+        //     //         method: "POST", 
+        //     //         body: JSON.stringify({"team": input.options[input.selectedIndex].value}),
+        //     //         headers: {
+        //     //             'Content-Type': 'application/json'
+        //     //         }
+        //     //     })
+        //     spinner = document.getElementById("spinner-border")
+        //     if (spinner) {
+        //         spinner.style.display = "block";
+        //     }
+
+        //     await fetch('/api/fixtures?team=' + main_team, {
+        //         method: "GET",
+        //         // body: JSON.stringify({"team": input.options[input.selectedIndex].value}),
+        //         headers: {
+        //             'Content-Type': 'application/json'
+        //         }
+        //     })
+        //         .then((response) => response.json())
+        //         .then((data) => {
+        //             fixtureForm.value = data;
+        //             showElement(fixtureForm.parentElement)
+
+        //             // remove all old children created from selecting a team before creating new ones
+        //             var fixtureOption = document.getElementsByClassName('fixtureOption');
+        //             if (fixtureOption) {
+        //                 removeElementsByClass("fixtureOption")
+        //             }
+
+        //             var init_opt = document.createElement("option")
+        //             init_opt.setAttribute("class", "fixtureOption")
+        //             init_opt.innerHTML = "select fixture"
+        //             fixtureForm.appendChild(init_opt);
+
+        //             for (fixture in data) {
+        //                 var opt = document.createElement("option");
+        //                 opt.setAttribute("class", "fixtureOption");
+        //                 home = data[fixture].home
+        //                 away = data[fixture].away
+        //                 opt.innerHTML = data[fixture].home + " v " + data[fixture].away + " | " + data[fixture].date;
+        //                 fixtureForm.appendChild(opt);
+        //             }
+        //         }).catch((err) => alert(err));
+        // }
+        // if (spinner) {
+        //     spinner.style.display = "none";
+        // }
+    }
+
+    // async function showScorersForm() {
+    //     showElement(scorersForm)
+    // }
+
+    // // var i = 0;
+    // // async function addNewScorerDiv() {
+    // //     // const scorersForm = document.getElementById('scorersForm');
+    // //     // console.log(scorersForm);
+    // //     const scorerDiv = document.getElementById('singleScorerInput');
+    // //     // console.log(scorerDiv);
+    // //     var clone = scorerDiv.cloneNode(true); // "deep" clone
+    // //     // console.log(clone);
+    // //     clone.id = "singleScorerInput" + ++i;
+    // //     console.log(clone.id);
+    // //     scorerDiv.parentNode.appendChild(clone);
+    // //     showElement(clone)
+    // // }
+
+    // function removeElementsByClass(className) {
+    //     const elements = document.getElementsByClassName(className);
+    //     while (elements.length > 0) {
+    //         elements[0].parentNode.removeChild(elements[0]);
+    //     }
+    // }
+
+    // function showElement(element) {
+    //     element.style = "display: block";
+    // }
+    // function hideElement(element) {
+    //     element.style = "display: none";
+    // }
+</script>
+
+{% endblock %}

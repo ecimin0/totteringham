@@ -1,0 +1,37 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: opa
+  namespace: opa
+  annotations:
+    nignx.ingress.kubernetes.io/force-ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/from-to-www-redirect: "true"
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+spec:
+  ingressClassName: nginx
+  rules:
+    - host: opa.runf11s.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: opa
+                port:
+                  name: https
+    - host: opa.f11s.run
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: opa
+                port:
+                  name: https
+  tls: # < placing a host in the TLS config will determine what ends up in the cert's subjectAltNames
+    - hosts:
+      - opa.runf11s.com
+      - opa.f11s.run
+      secretName: opa-tls # < cert-manager
