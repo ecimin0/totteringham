@@ -1,14 +1,14 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: prediction-site
-  namespace: opa
+  name: totteringham
+  namespace: totteringham
   labels:
-    name: prediction-site
+    name: totteringham
 spec:
   selector:
     matchLabels:
-      app: prediction-site
+      app: totteringham
   progressDeadlineSeconds: 360
   replicas: 1
   revisionHistoryLimit: 15
@@ -20,11 +20,11 @@ spec:
   template:
     metadata:
       labels:
-        app: prediction-site
+        app: totteringham
     spec:
       containers:
-      - name: prediction-site
-        image: registry.gitlab.com/ecimino/opa-football/prediction-site:1.0.9
+      - name: totteringham
+        image: registry.gitlab.com/ecimino/totteringham:1.0.0
         imagePullPolicy: Always
         envFrom:
         - secretRef:
@@ -36,10 +36,10 @@ spec:
         resources:
           limits:
             cpu: 100m
-            memory: 128Mi
+            memory: 256Mi
           requests:
             cpu: 100m
-            memory: 128Mi
+            memory: 256Mi
         ports:
         - containerPort: 5000
           name: http

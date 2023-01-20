@@ -1,8 +1,8 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: prediction-site
-  namespace: opa
+  name: totteringham
+  namespace: totteringham
   annotations:
     cert-manager.io/cluster-issuer: letsencrypt-prod
     nignx.ingress.kubernetes.io/force-ssl-redirect: "true"
@@ -14,28 +14,28 @@ metadata:
 spec:
   ingressClassName: nginx
   rules:
-  - host: prediction.opa.runf11s.com
+  - host: totteringham.runf11s.com
     http:
       paths:
       - path: /
         pathType: Prefix
         backend:
           service: 
-            name: prediction-site
+            name: totteringham
             port:
               name: http
-  - host: prediction.opa.f11s.run
+  - host: totteringham.f11s.run
     http:
       paths:
       - path: /
         pathType: Prefix
         backend:
           service: 
-            name: prediction-site
+            name: totteringham
             port:
               name: http
   tls:
   - hosts:
-    - prediction.opa.runf11s.com
-    - prediction.opa.f11s.run
-    secretName: prediction-site-tls # do not change, this is provided by Argo CD
+    - totteringham.runf11s.com
+    - totteringham.f11s.run
+    secretName: totteringham-tls # do not change, this is provided by Argo CD

@@ -1,11 +1,11 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: prediction-site
-  namespace: opa
+  name: totteringham
+  namespace: totteringham
 spec:
   selector:
-    app: prediction-site
+    app: totteringham
   ports:
     - name: http
       port: 80
