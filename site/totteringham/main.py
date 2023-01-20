@@ -59,9 +59,10 @@ def splitFixturesOnToday(fixtures):
 def addFixtureWinner(fixtures):
     for f in fixtures:
         if f.status_short not in ['PST', 'CANC']:
-            if int(f.goals_home) > int(f.goals_away):
+            print(f"{f.status_short} {f.goals_home} {f.goals_away}")
+            if f.goals_home > f.goals_away:
                 f.winner = f.home_team.name
-            elif int(f.goals_home) < int(f.goals_away):
+            elif f.goals_home < f.goals_away:
                 f.winner = f.away_team.name
             else:
                 f.winner = "draw"
