@@ -13,6 +13,12 @@ import json
 
 bp = Blueprint('main', __name__)
 
+
+@bp.route('/health', methods=['GET'])
+def health():
+    return "OK", 200
+
+
 @bp.route('/', methods=['GET'])
 def index():
     if request.method == "GET":
@@ -49,7 +55,7 @@ def splitFixturesOnToday(fixtures):
     past_fix = []
 
     for f in fixtures:
-        if f.event_date < datetime.datetime.now():
+        if f.event_date < datetime.datetime.utcnow():
             past_fix.append(f)
         else:
             future_fix.append(f)
@@ -58,7 +64,8 @@ def splitFixturesOnToday(fixtures):
 # adds winner key to fixture dicts
 def addFixtureWinner(fixtures):
     for f in fixtures:
-        if f.status_short not in ['PST', 'CANC']:
+        #if f.status_short not in ['PST', 'CANC']:
+        if f.status_short == "FT":
             print(f"{f.status_short} {f.goals_home} {f.goals_away}")
             if f.goals_home > f.goals_away:
                 f.winner = f.home_team.name
