@@ -22,11 +22,13 @@ def health():
 @bp.route('/', methods=['GET'])
 def index():
     if request.method == "GET":
-        # afc_fix = db.session.query(Fixture).filter(Fixture.event_date>'08-05-2022', Fixture.league_id==39).filter(or_(Fixture.home=='42', Fixture.away=='42')).order_by(text("event_date desc")).all()
-        # spuds_fix = db.session.query(Fixture).filter(Fixture.event_date>'08-05-2022', Fixture.league_id==39).filter(or_(Fixture.home=='47', Fixture.away=='47')).order_by(text("event_date desc")).all()
+        afc_fix = db.session.query(Fixture).filter(Fixture.event_date>'08-05-2022', Fixture.league_id==39).filter(or_(Fixture.home=='42', Fixture.away=='42')).order_by(text("event_date desc")).all()
+        spuds_fix = db.session.query(Fixture).filter(Fixture.event_date>'08-05-2022', Fixture.league_id==39).filter(or_(Fixture.home=='47', Fixture.away=='47')).order_by(text("event_date desc")).all()
 
-        fix = db.session.query(Fixture).filter(Fixture.event_date>'08-05-2022', Fixture.league_id==39).filter(or_(Fixture.home=='42', Fixture.away=='42', Fixture.home=='47', Fixture.away=='47')).order_by(text("event_date desc")).all()
-        print(fix)
+        # fix = db.session.query(Fixture).filter(Fixture.event_date>'08-05-2022', Fixture.league_id==39).filter(or_(Fixture.home=='42', Fixture.away=='42', Fixture.home=='47', Fixture.away=='47')).order_by(text("event_date desc")).all()
+
+        # afc_fix = splitFixturesByTeam(fix)
+        # spuds_fix = splitFixturesByTeam(fix)
         
         afc_future_fix, afc_past_fix = splitFixturesOnToday(afc_fix)
         spuds_future_fix, spuds_past_fix = splitFixturesOnToday(spuds_fix)
@@ -67,8 +69,8 @@ def splitFixturesOnToday(fixtures):
 # adds winner key to fixture dicts
 def addFixtureWinner(fixtures):
     for f in fixtures:
-        #if f.status_short not in ['PST', 'CANC']:
-        if f.status_short == "FT":
+        if f.status_short not in ['PST', 'CANC']:
+        # if f.status_short == "FT":
             print(f"{f.status_short} {f.goals_home} {f.goals_away}")
             if f.goals_home > f.goals_away:
                 f.winner = f.home_team.name
