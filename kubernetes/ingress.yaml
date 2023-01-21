@@ -14,17 +14,7 @@ metadata:
 spec:
   ingressClassName: nginx
   rules:
-  - host: totteringham.runf11s.com
-    http:
-      paths:
-      - path: /
-        pathType: Prefix
-        backend:
-          service: 
-            name: totteringham
-            port:
-              name: http
-  - host: totteringham.f11s.run
+  - host: whenissttotteringhams.day
     http:
       paths:
       - path: /
@@ -36,6 +26,5 @@ spec:
               name: http
   tls:
   - hosts:
-    - totteringham.runf11s.com
-    - totteringham.f11s.run
+    - whenissttotteringhams.day
     secretName: totteringham-tls # do not change, this is provided by Argo CD
