@@ -24,7 +24,7 @@ spec:
     spec:
       containers:
       - name: totteringham
-        image: registry.gitlab.com/ecimino/totteringham:1.1.0
+        image: registry.gitlab.com/ecimino/totteringham:1.2.0
         imagePullPolicy: Always
         envFrom:
         - secretRef:
