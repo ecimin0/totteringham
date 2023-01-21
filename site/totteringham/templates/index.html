@@ -3,11 +3,6 @@
 {% endblock %}
 {% block content %}
 
-<!-- NLD: bold/italic/underline?
-    win: green
-    draw: yella
-    loss: red -->
-
 <body>
     <h1 class="text-center" style="margin-top: 20px; margin-bottom: 50px;">when is st. totteringham's day?</h1>
     <div class="container text-center">
@@ -47,39 +42,6 @@
 
 <script>
     window.onload = spawnFixtures(); remainingNLDs(); remainingPoints();
-    // const mainTeamForm = document.getElementById('mainTeamForm');
-    // mainTeamForm.addEventListener('input', spawnFixtures);
-
-    // var main_team = mainTeamForm.options[mainTeamForm.selectedIndex].value
-
-    // const fixtureForm = document.getElementById('fixtureForm');
-    // fixtureForm.addEventListener('input', showScorersForm);
-
-    // const addScorers = document.querySelectorAll('[id=addScorer]');
-    // addScorers.forEach(function (elem) {
-    //     elem.addEventListener("click", function () {
-    //         const scorerTableBody = document.getElementById('scorerTableBody');
-    //         var newRow = scorerTableBody.insertRow();
-    //         var nameCell = newRow.insertCell();
-    //         var newName = document.createTextNode(elem.value);
-    //         nameCell.appendChild(newName);
-
-    //         var initGoalsCell = newRow.insertCell();
-    //         var initGoals = document.createTextNode('1');
-    //         initGoalsCell.appendChild(initGoals);
-
-    //         // var isFGSCell = newRow.insertCell();
-    //         // var isFGS = document.createElement("btn");
-    //         // isFGS.innerHTML = "FGS"
-    //         // isFGSCell.appendChild(isFGS);
-
-    //         // var scorerInTable = document.createElement("td");
-    //         // scorerInTable.value = elem.value;
-    //         // // console.log(scorerInTable);
-    //         // // console.log(scorerTableBody.append(scorerInTable));
-    //         // scorerTableBody.appendChild(scorerInTable);
-    //     });
-    // });
 
     function remainingPoints() {
         const afc_remaining = {{ afc_points }};
@@ -165,136 +127,30 @@
         afc_future_col.appendChild(new_afc_table);
         for (var index in afc_future_fixs) {
             f = afc_future_fixs[index];
-
-            // var new_p = document.createElement("p");
-            // new_p.innerHTML = `${f.home_team.name} v. ${f.away_team.name} | ${f.event_date} UTC`;
-
             var new_tr = new_afc_table_body.insertRow();
             var new_td = document.createElement("td");
             new_td.innerHTML = `${f.home_team.name} v. ${f.away_team.name} | ${f.event_date} UTC`;
-
-            // afc_future_col.appendChild(new_p);
             new_tr.appendChild(new_td);
             new_afc_table_body.appendChild(new_tr);
-            // afc_future_col.appendChild(document.createElement('br'));
         }
-
 
 
         var new_spuds_table = document.createElement("table");
         new_spuds_table.setAttribute("class", "table table-striped");
         var new_spuds_table_body = document.createElement("tbody");
-        var new_blank_tr = new_spuds_table_body.insertRow();
+        // var new_blank_tr = new_spuds_table_body.insertRow(); // uncomment for alternating striped tables
         new_spuds_table.appendChild(new_spuds_table_body);
         spuds_future_col.appendChild(new_spuds_table);
         for (var index in spuds_future_fixs) {
             f = spuds_future_fixs[index];
-
-            // var new_p = document.createElement("p");
-            // new_p.innerHTML = `${f.home_team.name} v. ${f.away_team.name} | ${f.event_date} UTC`;
-
             var new_tr = new_spuds_table_body.insertRow();
             var new_td = document.createElement("td");
             new_td.innerHTML = `${f.home_team.name} v. ${f.away_team.name} | ${f.event_date} UTC`;
-
-            // afc_future_col.appendChild(new_p);
             new_tr.appendChild(new_td);
             new_spuds_table_body.appendChild(new_tr);
             // afc_future_col.appendChild(document.createElement('br'));
         }
-
-        // for (var index in spuds_future_fixs) {
-        //     f = spuds_future_fixs[index];
-        //     var new_p = document.createElement("p");
-        //     new_p.innerHTML = `${f.home_team.name} v. ${f.away_team.name} | ${f.event_date} UTC`;
-        //     spuds_future_col.appendChild(new_p);
-        //     spuds_future_col.appendChild(document.createElement('br'));
-        // }
-        // if (e.target.value == "") {
-        //     hideElement(fixtureForm.parentElement)
-        // } else {
-        //     main_team = mainTeamForm.options[mainTeamForm.selectedIndex].value
-        //     // await fetch('/api/fixtures', { 
-        //     //         method: "POST", 
-        //     //         body: JSON.stringify({"team": input.options[input.selectedIndex].value}),
-        //     //         headers: {
-        //     //             'Content-Type': 'application/json'
-        //     //         }
-        //     //     })
-        //     spinner = document.getElementById("spinner-border")
-        //     if (spinner) {
-        //         spinner.style.display = "block";
-        //     }
-
-        //     await fetch('/api/fixtures?team=' + main_team, {
-        //         method: "GET",
-        //         // body: JSON.stringify({"team": input.options[input.selectedIndex].value}),
-        //         headers: {
-        //             'Content-Type': 'application/json'
-        //         }
-        //     })
-        //         .then((response) => response.json())
-        //         .then((data) => {
-        //             fixtureForm.value = data;
-        //             showElement(fixtureForm.parentElement)
-
-        //             // remove all old children created from selecting a team before creating new ones
-        //             var fixtureOption = document.getElementsByClassName('fixtureOption');
-        //             if (fixtureOption) {
-        //                 removeElementsByClass("fixtureOption")
-        //             }
-
-        //             var init_opt = document.createElement("option")
-        //             init_opt.setAttribute("class", "fixtureOption")
-        //             init_opt.innerHTML = "select fixture"
-        //             fixtureForm.appendChild(init_opt);
-
-        //             for (fixture in data) {
-        //                 var opt = document.createElement("option");
-        //                 opt.setAttribute("class", "fixtureOption");
-        //                 home = data[fixture].home
-        //                 away = data[fixture].away
-        //                 opt.innerHTML = data[fixture].home + " v " + data[fixture].away + " | " + data[fixture].date;
-        //                 fixtureForm.appendChild(opt);
-        //             }
-        //         }).catch((err) => alert(err));
-        // }
-        // if (spinner) {
-        //     spinner.style.display = "none";
-        // }
     }
-
-    // async function showScorersForm() {
-    //     showElement(scorersForm)
-    // }
-
-    // // var i = 0;
-    // // async function addNewScorerDiv() {
-    // //     // const scorersForm = document.getElementById('scorersForm');
-    // //     // console.log(scorersForm);
-    // //     const scorerDiv = document.getElementById('singleScorerInput');
-    // //     // console.log(scorerDiv);
-    // //     var clone = scorerDiv.cloneNode(true); // "deep" clone
-    // //     // console.log(clone);
-    // //     clone.id = "singleScorerInput" + ++i;
-    // //     console.log(clone.id);
-    // //     scorerDiv.parentNode.appendChild(clone);
-    // //     showElement(clone)
-    // // }
-
-    // function removeElementsByClass(className) {
-    //     const elements = document.getElementsByClassName(className);
-    //     while (elements.length > 0) {
-    //         elements[0].parentNode.removeChild(elements[0]);
-    //     }
-    // }
-
-    // function showElement(element) {
-    //     element.style = "display: block";
-    // }
-    // function hideElement(element) {
-    //     element.style = "display: none";
-    // }
 </script>
 
 {% endblock %}
