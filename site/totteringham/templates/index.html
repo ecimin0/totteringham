@@ -163,7 +163,6 @@
         new_afc_table_body = document.createElement("tbody");
         new_afc_table.appendChild(new_afc_table_body);
         afc_future_col.appendChild(new_afc_table);
-
         for (var index in afc_future_fixs) {
             f = afc_future_fixs[index];
 
@@ -180,13 +179,37 @@
             // afc_future_col.appendChild(document.createElement('br'));
         }
 
+
+
+        var new_spuds_table = document.createElement("table");
+        new_spuds_table.setAttribute("class", "table table-striped");
+        var new_spuds_table_body = document.createElement("tbody");
+        var new_blank_tr = new_spuds_table_body.insertRow();
+        new_spuds_table.appendChild(new_spuds_table_body);
+        spuds_future_col.appendChild(new_spuds_table);
         for (var index in spuds_future_fixs) {
             f = spuds_future_fixs[index];
-            var new_p = document.createElement("p");
-            new_p.innerHTML = `${f.home_team.name} v. ${f.away_team.name} | ${f.event_date} UTC`;
-            spuds_future_col.appendChild(new_p);
-            spuds_future_col.appendChild(document.createElement('br'));
+
+            // var new_p = document.createElement("p");
+            // new_p.innerHTML = `${f.home_team.name} v. ${f.away_team.name} | ${f.event_date} UTC`;
+
+            var new_tr = new_spuds_table_body.insertRow();
+            var new_td = document.createElement("td");
+            new_td.innerHTML = `${f.home_team.name} v. ${f.away_team.name} | ${f.event_date} UTC`;
+
+            // afc_future_col.appendChild(new_p);
+            new_tr.appendChild(new_td);
+            new_spuds_table_body.appendChild(new_tr);
+            // afc_future_col.appendChild(document.createElement('br'));
         }
+
+        // for (var index in spuds_future_fixs) {
+        //     f = spuds_future_fixs[index];
+        //     var new_p = document.createElement("p");
+        //     new_p.innerHTML = `${f.home_team.name} v. ${f.away_team.name} | ${f.event_date} UTC`;
+        //     spuds_future_col.appendChild(new_p);
+        //     spuds_future_col.appendChild(document.createElement('br'));
+        // }
         // if (e.target.value == "") {
         //     hideElement(fixtureForm.parentElement)
         // } else {
