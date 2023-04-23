@@ -1,27 +1,30 @@
-from email.mime import image
-import logging
-from flask import (
-    Blueprint, flash, g, redirect, render_template, request, url_for, jsonify
-)
-from werkzeug.exceptions import abort
-from . import db
-from totteringham.models import *
-from sqlalchemy.sql import select, or_
 import datetime
-import re
 import json
+import logging
 import math
-from typing import Optional
+import re
+from email.mime import image
+from typing import Optional, Tuple
+
+from flask import (Blueprint, flash, g, jsonify, redirect, render_template,
+                   request, url_for, Response)
+from sqlalchemy.sql import or_, select
+from totteringham.models import *
+from typeguard import typechecked
+from werkzeug.exceptions import abort
+
+from . import db
 
 bp = Blueprint('main', __name__)
 # bp.wsgi_app = ProfilerMiddleware(bp)
 # print(bp.wsgi_app)
 
+@typechecked
 @bp.route('/health', methods=['GET'])
-def health():
+def health() -> Tuple[str, int]:
     return "OK", 200
 
-
+# @typechecked
 @bp.route('/', methods=['GET'])
 def index():
     if request.method == "GET":
@@ -35,7 +38,8 @@ def index():
         afc_past_fix_complete = addFixtureWinner(afc_past_fix)
         spuds_past_fix_complete = addFixtureWinner(spuds_past_fix)
 
-        def currentPoints(fixtures):
+        @typechecked
+        def currentPoints(fixtures: list) -> int:
             points = 0
             for f in fixtures:
                 if f.winner == "Arsenal" or f.winner == "Tottenham":
@@ -52,20 +56,20 @@ def index():
         afc_remaining_points = remainingPoints(afc_future_fix)
         spuds_remaining_points = remainingPoints(spuds_future_fix)
 
-        # dates
-        afc_max_points = afc_points + afc_remaining_points
-        num_afc_matches_remaining = len(afc_future_fix)
-        spuds_max_points = spuds_points + spuds_remaining_points
-        num_spuds_matches_remaining = len(spuds_future_fix)
-        # print(f"afc pts: {afc_points}, afc max: {afc_max_points}, afc remain: {num_afc_matches_remaining} | tot pts: {spuds_points}, tot max: {spuds_max_points}, tot remain: {num_spuds_matches_remaining}")
-        # print(f"weeks: {(spuds_max_points - afc_points) / 3}, rounded: {math.ceil((spuds_max_points - afc_points) / 3)}")
-        # print(afc_future_fix[math.ceil(num_afc_matches_remaining - (spuds_max_points - afc_points) / 3)].event_date)
+        # # dates
+        # afc_max_points = afc_points + afc_remaining_points
+        # num_afc_matches_remaining = len(afc_future_fix)
+        # spuds_max_points = spuds_points + spuds_remaining_points
+        # num_spuds_matches_remaining = len(spuds_future_fix)
 
-
-        test_earliest()
-        # test_latest()
-        print(latest(50,36,18))
-        # print(earliest(50,36,18))
+        print("------")
+        earliest(50, 36, afc_future_fix)
+        print("------")
+        predicted(50, 36, afc_future_fix)
+        print("------")
+        latestAllWins(50, 36, afc_future_fix)
+        print("------")
+        afcStopWinning(50, 36, afc_future_fix)
 
         return render_template('index.html',
             afc_past=[a.toJson() for a in afc_past_fix_complete],
@@ -79,7 +83,10 @@ def index():
             spuds_remaining_points=spuds_remaining_points)
 
 
-def earliest(main, opponent, remaining) -> Optional[int]:
+# 7 (afc win all, tot lose all)
+@typechecked
+def earliest(main: int, opponent: int, fixtures: list) -> Optional[int]:
+    remaining = len(fixtures)
     for i in range(remaining):
         print(f"Iteration: {i} Main: {main} Opponent: {opponent} Max Points Still Attainable: {(remaining - i) * 3} Perfect: {remaining * 3}")
         if isTotts(main, opponent, remaining - i):
@@ -88,41 +95,66 @@ def earliest(main, opponent, remaining) -> Optional[int]:
         opponent += 0
     return None
 
-def averagest(main, opponent, remaining) -> Optional[int]:
-    ...
 
-def latest(main, opponent, remaining) -> Optional[int]:
+# best effort prediction using accurate ppg
+@typechecked
+def predicted(main: int, opponent: int, fixtures: list) -> Optional[float]:
+    remaining = len(fixtures)
+    for i in range(remaining):
+        main_ppg = 0.00
+        opponent_ppg = 0.00
+        print(f"Iteration: {i} Main: {main} Opponent: {opponent} Max Points Still Attainable: {(remaining - i) * 3} Perfect: {remaining * 3}")
+        if isTotts(main_ppg, opponent_ppg, remaining - i):
+            return i
+        main_ppg += (main / (38 - remaining))
+        opponent_ppg += (opponent / (38 - remaining))
+    return None
+
+
+# 14 (both win all from x point forward)
+# does not account for nld x2
+@typechecked
+def latestAllWins(main: int, opponent: int, fixtures: list) -> Optional[int]:
+    remaining = len(fixtures)
     for i in range(remaining):
         print(f"Iteration: {i} Main: {main} Opponent: {opponent} Max Points Still Attainable: {(remaining - i) * 3} Perfect: {remaining * 3}")
-        if isTottsLatest(main, opponent):
+        if isTotts(main, opponent, remaining - i):
+            return i
+        main += 3
+        opponent += 3
+    return None
+
+
+# None (no st totts) (afc lose all, tot win all)
+@typechecked
+def afcStopWinning(main: int, opponent: int, fixtures: list) -> Optional[int]:
+    remaining = len(fixtures)
+    for i in range(remaining):
+        print(f"Iteration: {i} Main: {main} Opponent: {opponent} Max Points Still Attainable: {(remaining - i) * 3} Perfect: {remaining * 3}")
+        if isTotts(main, opponent, remaining - i):
             return i
         main += 0
         opponent += 3
     return None
 
-def isTotts(main, opponent, remaining):
+# [Latest Actual] = last game
+# [Assuming we don't suck and they don't suck] = 14 (everybody wins everything no crossplay)
+# [assuming we don't suck, assuming they suck] = 7 (we win everything, they lose everything)
+# [assuming we suck, assuming they don't suck] = None
+
+@typechecked
+def isTotts(main: int | float, opponent: int | float, remaining: int) -> Optional[int]:
     return main - opponent > remaining * 3
 
-def isTottsLatest(main, opponent):
-    return main > opponent
 
-def test_earliest():
-    assert(earliest(50, 36, 18) == 7)
-    print("")
-    # assert(earliest(50, 36, 1) == 0)
-    # print("")
-    # assert(earliest(0, 0, 3) == 2)
-    # print("")
-    # assert(earliest(0, 0, 18) == 10)
-
-def test_latest():
-    assert(latest(50, 36, 18) == 7)
-    print("")
-    # assert(earliest(50, 36, 1) == 0)
-    # print("")
-    # assert(earliest(0, 0, 3) == 2)
-    # print("")
-    # assert(earliest(0, 0, 18) == 10)
+# print("------")
+# earliest(50, 36, 18)
+# print("------")
+# predicted(50, 36, 18)
+# print("------")
+# latestAllWins(50, 36, 18)
+# print("------")
+# afcStopWinning(50, 36, 18)
 
 
 # def possibleDates(points, remain_points, future_matches):
@@ -130,7 +162,8 @@ def test_latest():
 #     num_matches_remaining = len(future_matches)
 
 
-def splitFixturesByTeam(fixtures):
+@typechecked
+def splitFixturesByTeam(fixtures: list) -> Tuple[list, list]:
     afc = []
     spuds = []
     for f in fixtures:
@@ -140,15 +173,17 @@ def splitFixturesByTeam(fixtures):
             spuds.append(f)
     return (afc, spuds)
 
-def remainingPoints(fixtures):
+
+@typechecked
+def remainingPoints(fixtures: list) -> int:
     return (len(fixtures) * 3)
 
 
 # split fixture lists on today's date
-def splitFixturesOnToday(fixtures):
+@typechecked
+def splitFixturesOnToday(fixtures: list) -> Tuple[list, list]:
     future_fix = []
     past_fix = []
-
     for f in fixtures:
         if f.event_date < datetime.datetime.utcnow():
             past_fix.append(f)
@@ -156,8 +191,10 @@ def splitFixturesOnToday(fixtures):
             future_fix.append(f)
     return (future_fix, past_fix)
 
+
 # adds winner key to fixture dicts
-def addFixtureWinner(fixtures):
+@typechecked
+def addFixtureWinner(fixtures: list) -> list:
     for f in fixtures:
         if f.status_short not in ['PST', 'CANC']:
             # print(f"{f.status_short} {f.goals_home} {f.goals_away}")
@@ -169,8 +206,10 @@ def addFixtureWinner(fixtures):
                 f.winner = "draw"
     return fixtures
 
+
 # how many NLDs played so far?
-def playedNLD(fixtures):
+@typechecked
+def playedNLD(fixtures: list) -> int:
     nlds = 0
     for f in fixtures:
         if f.status_short in "FT, AET, PEN":
