@@ -35,10 +35,10 @@ spec:
           readOnlyRootFilesystem: false
         resources:
           limits:
-            cpu: 50m
+            cpu: 100m
             memory: 256Mi
           requests:
-            cpu: 50m
+            cpu: 100m
             memory: 256Mi
         ports:
         - containerPort: 5000
