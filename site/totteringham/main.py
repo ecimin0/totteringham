@@ -169,7 +169,7 @@ def splitFixturesByTeam(fixtures: list) -> Tuple[list, list]:
     for f in fixtures:
         if f.home == 42 or f.away == 42:
             afc.append(f)
-        else:
+        if f.home == 47 or f.away == 47:
             spuds.append(f)
     return (afc, spuds)
 
