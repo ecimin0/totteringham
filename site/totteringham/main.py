@@ -1,3 +1,4 @@
+from __future__ import annotations
 import datetime
 import json
 import logging
@@ -28,7 +29,7 @@ def health() -> Tuple[str, int]:
 @bp.route('/', methods=['GET'])
 def index():
     if request.method == "GET":
-        fix = db.session.query(Fixture).filter(Fixture.event_date>'08-05-2022', Fixture.league_id==39).filter(or_(Fixture.home=='42', Fixture.away=='42', Fixture.home=='47', Fixture.away=='47')).order_by(text("event_date desc")).all()
+        fix = db.session.query(Fixture).filter(Fixture.event_date>'08-11-2023', Fixture.league_id==39).filter(or_(Fixture.home=='42', Fixture.away=='42', Fixture.home=='47', Fixture.away=='47')).order_by(text("event_date desc")).all()
 
         afc_fix, spuds_fix = splitFixturesByTeam(fix)
 
