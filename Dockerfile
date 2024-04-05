@@ -1,7 +1,7 @@
 FROM python:3.9-slim
 
 WORKDIR /usr/src/app
-COPY requirements.txt ./
+COPY site/requirements.txt ./
 
 RUN apt-get update && apt-get install --no-install-recommends gcc g++ libc-dev make git libffi-dev openssl python3-dev libxml2-dev libxslt-dev musl-dev libpq-dev -y && \
     rm -rf /var/lib/apt/lists/* && \
