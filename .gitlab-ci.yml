@@ -41,7 +41,7 @@ commit:
     # - git checkout -B "$CI_COMMIT_REF_NAME" "$CI_COMMIT_SHA"
     # - echo "$CI_COMMIT_SHORT_SHA"
     - git switch "$CI_COMMIT_REF_NAME"
-    - sed -ri "s@ecimino\/runf11s-flask.*@ecimino\/totteringham\:$CI_COMMIT_SHORT_SHA@g" kubernetes/deployment.yaml
+    - sed -ri "s@ecimino\/totteringham.*@ecimino\/totteringham\:$CI_COMMIT_SHORT_SHA@g" kubernetes/deployment.yaml
     - git --no-pager diff
     - git add kubernetes/deployment.yaml && git commit -m "[skip-ci] $CI_COMMIT_MESSAGE"
     - git push "https://gitlab_ci_pat:$GITLAB_CI_PAT@$CI_SERVER_HOST/$CI_PROJECT_PATH.git" HEAD:$CI_COMMIT_BRANCH
