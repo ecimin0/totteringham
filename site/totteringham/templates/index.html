@@ -12,13 +12,28 @@
             </div>
         </div>
         <div class="row">
-            <h3 class="text-center">maximum possible points remaining:</h3>
+            <h3 class="text-center">earliest possible date</h3>
+            <div class="col" style="margin-bottom: 20px;" id="earliest_col">
+            </div>
+        </div>
+        <div class="row">
+            <h3 class="text-center">maximum possible points remaining</h3>
             <div class="col" style="margin-top: 20px;" id="afc_remaining_col">
                 <h6>Arsenal</h6>
             </div>
             <div class="col" style="margin-top: 20px;" id="spuds_remaining_col">
                 <h6>Tottenham</h6>
             </div>
+        </div>
+        <div class="row">
+            <h3 class="text-center">points per game</h3>
+            <div class="col" style="margin-top: 20px;" id="afc_ppg_col">
+                <h6>Arsenal</h6>
+            </div>
+            <div class="col" style="margin-top: 20px;" id="spuds_ppg_col">
+                <h6>Tottenham</h6>
+            </div>
+        </div>
         <div class="row">
             <h3 class="text-center">upcoming fixtures</h3>
             <div class="col" style="margin-top: 20px;" id="afc_future_col">
@@ -27,6 +42,7 @@
             <div class="col" style="margin-top: 20px;" id="spuds_future_col">
                 <h6>Tottenham</h6>
             </div>
+        </div>
         <div class="row" style="margin-top: 50px;">
             <h3 class="text-center">completed fixtures</h3>
             <div class="col" style="margin-top: 20px;" id="afc_past_col">
@@ -41,7 +57,7 @@
 
 
 <script>
-    window.onload = spawnFixtures(); remainingNLDs(); remainingPoints();
+    window.onload = spawnFixtures(); remainingNLDs(); remainingPoints(); ppg(); earliest();
 
     function remainingPoints() {
         const afc_remaining = {{ afc_remaining_points }};
@@ -56,6 +72,32 @@
 
         afc_remaining_col.appendChild(afc_points_num)
         spuds_remaining_col.appendChild(spuds_points_num)
+    }
+
+    function ppg() {
+        const afc_ppg = {{ afc_ppg }};
+        const spuds_ppg = {{ spuds_ppg }};
+        const afc_ppg_col = document.getElementById('afc_ppg_col');
+        const spuds_ppg_col = document.getElementById('spuds_ppg_col');
+        var afc_ppg_num = document.createElement("h2");
+        var spuds_ppg_num = document.createElement("h2");
+
+        afc_ppg_num.innerHTML = Math.round(afc_ppg * 100) / 100;
+        spuds_ppg_num.innerHTML = Math.round(spuds_ppg * 100) / 100;
+
+        afc_ppg_col.appendChild(afc_ppg_num)
+        spuds_ppg_col.appendChild(spuds_ppg_num)
+    }
+
+    function earliest() {
+        // const earliest_date = {{ earliest_date }};
+        earliest_date = "04-20-2024"
+        console.log(earliest_date);
+        earliest_date = String(earliest_date);
+        const earliest_col = document.getElementById('earliest_col');
+        var earliest_h2 = document.createElement("h2");
+        earliest_h2.innerHTML = `${earliest_date} UTC`;
+        earliest_col.appendChild(earliest_h2);
     }
 
     function remainingNLDs() {
@@ -96,11 +138,11 @@
         const afc_past_col = document.getElementById('afc_past_col');
         const spuds_past_col = document.getElementById('spuds_past_col');
 
-        var afc_past_fixs = {{ afc_past|tojson|safe }};
-        var spuds_past_fixs = {{ spuds_past|tojson|safe }};
+        var afc_past_fixs = {{ afc_past| tojson | safe}};
+        var spuds_past_fixs = {{ spuds_past| tojson | safe }};
 
-        var afc_future_fixs = {{ afc_future|tojson|safe }};
-        var spuds_future_fixs = {{ spuds_future|tojson|safe }};
+        var afc_future_fixs = {{ afc_future| tojson | safe }};
+        var spuds_future_fixs = {{ spuds_future| tojson | safe }};
 
         // console.log(afc_past_fixs);
         for (var index in afc_past_fixs) {
