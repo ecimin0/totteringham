@@ -4,18 +4,25 @@
 {% block content %}
 
 <body>
-    <h1 class="text-center" style="margin-top: 20px; margin-bottom: 50px;">when is st. totteringham's day?</h1>
+    <h1 class="text-center" style="margin-top: 20px; margin-bottom: 50px;">is it saint totteringham's day?</h1>
     <div class="container text-center">
+        <div class="row">
+            <div class="col" style="margin-bottom: 30px;" id="is_totts_col">
+            </div>
+        </div>
+        <br>
         <div class="row">
             <h3 class="text-center">remaining North London Derbies</h3>
             <div class="col" style="margin-bottom: 30px;" id="nlds_col">
             </div>
         </div>
+        <br>
         <div class="row">
             <h3 class="text-center">earliest possible date</h3>
             <div class="col" style="margin-bottom: 20px;" id="earliest_col">
             </div>
         </div>
+        <br>
         <div class="row">
             <h3 class="text-center">maximum possible points remaining</h3>
             <div class="col" style="margin-top: 20px;" id="afc_remaining_col">
@@ -25,6 +32,7 @@
                 <h6>Tottenham</h6>
             </div>
         </div>
+        <br>
         <div class="row">
             <h3 class="text-center">points per game</h3>
             <div class="col" style="margin-top: 20px;" id="afc_ppg_col">
@@ -34,6 +42,7 @@
                 <h6>Tottenham</h6>
             </div>
         </div>
+        <br>
         <div class="row">
             <h3 class="text-center">upcoming fixtures</h3>
             <div class="col" style="margin-top: 20px;" id="afc_future_col">
@@ -43,6 +52,7 @@
                 <h6>Tottenham</h6>
             </div>
         </div>
+        <br>
         <div class="row" style="margin-top: 50px;">
             <h3 class="text-center">completed fixtures</h3>
             <div class="col" style="margin-top: 20px;" id="afc_past_col">
@@ -57,7 +67,7 @@
 
 
 <script>
-    window.onload = spawnFixtures(); remainingNLDs(); remainingPoints(); ppg(); earliest();
+    window.onload = spawnFixtures(); remainingNLDs(); remainingPoints(); ppg(); earliest(); isTotts();
 
     function remainingPoints() {
         const afc_remaining = {{ afc_remaining_points }};
@@ -90,14 +100,25 @@
     }
 
     function earliest() {
-        // const earliest_date = {{ earliest_date }};
-        earliest_date = "04-20-2024"
-        console.log(earliest_date);
-        earliest_date = String(earliest_date);
+        var earliest_date = "{{ earliest_date }}";
         const earliest_col = document.getElementById('earliest_col');
         var earliest_h2 = document.createElement("h2");
-        earliest_h2.innerHTML = `${earliest_date} UTC`;
+        earliest_h2.innerHTML = earliest_date;
         earliest_col.appendChild(earliest_h2);
+    }
+
+    function isTotts() {
+        var is_totts = "{{ is_totts }}";
+        console.log*typeof(is_totts)
+        if (isTotts === true) {
+            is_totts_str = "YES!"
+            } else {
+            is_totts_str = "NO"
+        }
+        const is_totts_col = document.getElementById('is_totts_col');
+        var is_totts_h1 = document.createElement("h1");
+        is_totts_h1.innerHTML = is_totts_str;
+        is_totts_col.appendChild(is_totts_h1);
     }
 
     function remainingNLDs() {

@@ -90,13 +90,18 @@ def index():
         # spuds_max_points = spuds_points + spuds_remaining_points
         # num_spuds_matches_remaining = len(spuds_future_fix)
 
+        is_totts = isTotts(afc_points, spuds_points, len(afc_future_fix))
+
         earliest_date = earliestDate(afc_points, spuds_points, afc_future_fix)
+        earliest_date_fmt = earliest_date.strftime("%Y-%m-%d")
         print(f"earliest {earliest_date}\n")
         predicted_date = predictedDate(afc_points, spuds_points, afc_future_fix)
         print(f"predicted {predicted_date}\n")
         latest_date = latestAllWinsDate(afc_points, spuds_points, afc_future_fix)
         print(f"latestAllWins {latest_date}\n")
-        afc_stop_winning_date = afcStopWinningDate(afc_points, spuds_points, afc_future_fix)
+        afc_stop_winning_date = afcStopWinningDate(
+            afc_points, spuds_points, afc_future_fix
+        )
         print(f"afcStopWinning {afc_stop_winning_date}\n")
 
         return render_template(
@@ -112,10 +117,11 @@ def index():
             spuds_remaining_points=spuds_remaining_points,
             afc_ppg=afc_ppg,
             spuds_ppg=spuds_ppg,
-            earliest_date=earliest_date, # instead of doing a date in the functions, go back to returning an int and do the calculation on the front end
+            earliest_date=earliest_date_fmt,
             predicted_date=predicted_date,
             latest_date=latest_date,
             afc_stop_winning_date=afc_stop_winning_date,
+            is_totts=is_totts,
         )
 
 
@@ -131,10 +137,11 @@ def getPPG(points: int, fixtures: list) -> Optional[int | float]:
 # def earliest_date():
 
 
-
 @typechecked
 # def earliest(main: int, opponent: int, fixtures: list) -> Optional[int]:
-def earliestDate(main: int, opponent: int, fixtures: list) -> Optional[datetime.datetime]:
+def earliestDate(
+    main: int, opponent: int, fixtures: list
+) -> Optional[datetime.datetime]:
     remaining = len(fixtures)
     for i in range(remaining):
         print(
@@ -149,7 +156,9 @@ def earliestDate(main: int, opponent: int, fixtures: list) -> Optional[datetime.
 
 
 @typechecked
-def predictedDate(main: int, opponent: int, fixtures: list) -> Optional[datetime.datetime]:
+def predictedDate(
+    main: int, opponent: int, fixtures: list
+) -> Optional[datetime.datetime]:
     remaining = len(fixtures)
     main_ppg = getPPG(main, fixtures)
     opponent_ppg = getPPG(opponent, fixtures)
@@ -172,7 +181,9 @@ def predictedDate(main: int, opponent: int, fixtures: list) -> Optional[datetime
 
 # does not account for nld x2
 @typechecked
-def latestAllWinsDate(main: int, opponent: int, fixtures: list) -> Optional[datetime.datetime]:
+def latestAllWinsDate(
+    main: int, opponent: int, fixtures: list
+) -> Optional[datetime.datetime]:
     remaining = len(fixtures)
     for i in range(remaining):
         print(
@@ -188,7 +199,9 @@ def latestAllWinsDate(main: int, opponent: int, fixtures: list) -> Optional[date
 
 # None (no st totts) (afc lose all, tot win all)
 @typechecked
-def afcStopWinningDate(main: int, opponent: int, fixtures: list) -> Optional[datetime.datetime]:
+def afcStopWinningDate(
+    main: int, opponent: int, fixtures: list
+) -> Optional[datetime.datetime]:
     remaining = len(fixtures)
     for i in range(remaining):
         print(
