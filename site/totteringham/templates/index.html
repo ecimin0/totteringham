@@ -3,25 +3,30 @@
 {% endblock %}
 {% block content %}
 
-<body>
-    <h1 class="text-center" style="margin-top: 20px; margin-bottom: 50px;">is it saint totteringham's day?</h1>
+<body style="background-color: #063672; color: #FFF;">
+    <br>
+    <br>
+    <h1 class="text-center" style="margin-top: 20px; margin-bottom: 50px;">when is saint totteringham's day?</h1>
     <div class="container text-center">
         <div class="row">
             <div class="col" style="margin-bottom: 30px;" id="is_totts_col">
             </div>
         </div>
-        <br>
-        <div class="row">
-            <h3 class="text-center">remaining North London Derbies</h3>
-            <div class="col" style="margin-bottom: 30px;" id="nlds_col">
-            </div>
-        </div>
-        <br>
+        <!-- <br> -->
+        <!-- <br> -->
         <div class="row">
             <h3 class="text-center">earliest possible date</h3>
             <div class="col" style="margin-bottom: 20px;" id="earliest_col">
             </div>
         </div>
+        <br>
+        <br>
+        <div class="row" style="background-color: #FFF; color: #000">
+            <h3 class="text-center">remaining North London Derbies</h3>
+            <div class="col" style="margin-bottom: 30px;" id="nlds_col">
+            </div>
+        </div>
+        <br>
         <br>
         <div class="row">
             <h3 class="text-center">maximum possible points remaining</h3>
@@ -33,6 +38,7 @@
             </div>
         </div>
         <br>
+        <br>
         <div class="row">
             <h3 class="text-center">points per game</h3>
             <div class="col" style="margin-top: 20px;" id="afc_ppg_col">
@@ -43,6 +49,7 @@
             </div>
         </div>
         <br>
+        <br>
         <div class="row">
             <h3 class="text-center">upcoming fixtures</h3>
             <div class="col" style="margin-top: 20px;" id="afc_future_col">
@@ -52,6 +59,7 @@
                 <h6>Tottenham</h6>
             </div>
         </div>
+        <br>
         <br>
         <div class="row" style="margin-top: 50px;">
             <h3 class="text-center">completed fixtures</h3>
@@ -67,21 +75,35 @@
 
 
 <script>
-    window.onload = spawnFixtures(); remainingNLDs(); remainingPoints(); ppg(); earliest(); isTotts();
+    window.onload = spawnFixtures(); remainingNLDs(); remainingPoints(); ppg(); earliest(); //isTotts();
 
     function remainingPoints() {
         const afc_remaining = {{ afc_remaining_points }};
         const spuds_remaining = {{ spuds_remaining_points }};
+
+        const afc_future_fix = {{ afc_future | tojson | safe }};
+        const afc_future_fix_len = afc_future_fix.length;
+        const spuds_future_fix = {{ spuds_future | tojson | safe }};
+        const spuds_future_fix_len = spuds_future_fix.length;
+
         const afc_remaining_col = document.getElementById('afc_remaining_col');
         const spuds_remaining_col = document.getElementById('spuds_remaining_col');
+
         var afc_points_num = document.createElement("h2");
         var spuds_points_num = document.createElement("h2");
-
         afc_points_num.innerHTML = afc_remaining;
         spuds_points_num.innerHTML = spuds_remaining;
 
-        afc_remaining_col.appendChild(afc_points_num)
-        spuds_remaining_col.appendChild(spuds_points_num)
+        var afc_future_fix_num = document.createElement("h5");
+        var spuds_future_fix_num = document.createElement("h5");
+        afc_future_fix_num.innerHTML = `${afc_future_fix_len} matches remaining`;
+        spuds_future_fix_num.innerHTML = `${spuds_future_fix_len} matches remaining`;
+
+        afc_remaining_col.appendChild(afc_points_num);
+        spuds_remaining_col.appendChild(spuds_points_num);
+
+        afc_remaining_col.appendChild(afc_future_fix_num);
+        spuds_remaining_col.appendChild(spuds_future_fix_num);
     }
 
     function ppg() {
@@ -193,6 +215,7 @@
             var new_tr = new_afc_table_body.insertRow();
             var new_td = document.createElement("td");
             new_td.innerHTML = `${f.home_team.name} v. ${f.away_team.name} | ${f.event_date} UTC`;
+            new_td.setAttribute("style", "color: #FFF"); // white table
             new_tr.appendChild(new_td);
             new_afc_table_body.appendChild(new_tr);
         }
@@ -209,6 +232,7 @@
             var new_tr = new_spuds_table_body.insertRow();
             var new_td = document.createElement("td");
             new_td.innerHTML = `${f.home_team.name} v. ${f.away_team.name} | ${f.event_date} UTC`;
+            new_td.setAttribute("style", "color: #FFF"); // white table
             new_tr.appendChild(new_td);
             new_spuds_table_body.appendChild(new_tr);
             // afc_future_col.appendChild(document.createElement('br'));
