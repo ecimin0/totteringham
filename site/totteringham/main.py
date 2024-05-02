@@ -55,6 +55,8 @@ def index():
             .all()
         )
 
+        fix_rev = list(reversed(fix))
+
         afc_fix, spuds_fix = splitFixturesByTeam(fix)
 
         afc_future_fix, afc_past_fix = splitFixturesOnToday(afc_fix)
@@ -84,18 +86,24 @@ def index():
         afc_ppg = getPPG(afc_points, afc_future_fix)
         spuds_ppg = getPPG(spuds_points, spuds_future_fix)
 
+        totts_date = whenIsStTotts(fix_rev)
+
+        if datetime.datetime.now() > totts_date:
+            is_totts: bool = True
+        else:
+            is_totts: bool = False
+
         # # dates
         # afc_max_points = afc_points + afc_remaining_points
         # num_afc_matches_remaining = len(afc_future_fix)
         # spuds_max_points = spuds_points + spuds_remaining_points
         # num_spuds_matches_remaining = len(spuds_future_fix)
 
-        is_totts = isTotts(afc_points, spuds_points, len(afc_future_fix))
+        # is_totts = isTotts(afc_points, spuds_points, len(afc_future_fix))
 
-        earliest_date = earliestDate(afc_points, spuds_points, afc_future_fix, spuds_future_fix)
-        earliest_date_fmt = earliest_date.strftime("%Y-%m-%d")
+        # earliest_date = earliestDate(afc_points, spuds_points, afc_future_fix, afc_past_fix, spuds_future_fix, spuds_past_fix)
+        # earliest_date_fmt = earliest_date.strftime("%Y-%m-%d")
         # earliest_date_fmt = earliest_date
-        print(f"earliest {earliest_date}\n")
         # predicted_date = predictedDate(afc_points, spuds_points, afc_future_fix)
         # print(f"predicted {predicted_date}\n")
         # latest_date = latestAllWinsDate(afc_points, spuds_points, afc_future_fix)
@@ -119,7 +127,7 @@ def index():
             spuds_remaining_points=spuds_remaining_points,
             afc_ppg=afc_ppg,
             spuds_ppg=spuds_ppg,
-            earliest_date=earliest_date_fmt,
+            # earliest_date=earliest_date_fmt,
             # predicted_date=predicted_date,
             # latest_date=latest_date,
             # afc_stop_winning_date=afc_stop_winning_date,
@@ -135,83 +143,169 @@ def getPPG(points: int, fixtures: list) -> Optional[int | float]:
     return ppg
 
 
-# has to also take spuds fixtures into account since its their points we care about
-# and we aren't always on the same number of fixtures
-# we are looking for the event_date of the match on/after which, if arsenal receive 0 more points, spuds can still not overtake them
-@typechecked
-def isTotts(main: int | float, opponent: int | float, remaining: int) -> Optional[int]:
-    return main - opponent > remaining * 3
-
+# @typechecked
+# def isTotts(main: int | float, opponent: int | float, remaining: int) -> Optional[int]:
+#     return main - opponent > remaining * 3
 
 @typechecked
-# def earliestDate(afc_points: int, spuds_points: int, afc_fixtures: list, spuds_fixtures: list) -> Optional[int]:
-def earliestDate(afc_points: int, spuds_points: int, afc_fixtures: list, spuds_fixtures: list) -> Optional[datetime.datetime]:
+def whenIsStTotts(combined_all_fixtures: list) -> Optional[datetime.datetime]:
+    afc_points: int = 0
+    spuds_points: int = 0
+    afc_fix_num: int = 0
+    spuds_fix_num: int = 0
 
-    # these get reversed because the orignal lists are sorted where 0 is the "current" fixture, and we need the last element instead
-    afc_fixtures = list(reversed(afc_fixtures))
-    spuds_fixtures = list(reversed(spuds_fixtures))
+    for fixture in combined_all_fixtures:
+        home: str = ""
+        away: str = ""
+        gh: int = 0
+        ga: int = 0
+        winner: str = ""
 
-    afc_remaining = len(afc_fixtures)
-    spuds_remaining = len(spuds_fixtures)
-    remaining = max(afc_remaining, spuds_remaining)
+        if fixture.status_short != "NS":
+            if fixture.home == 42 and fixture.away == 47:
+                home = "arsenal"
+                away = "spuds"
+                afc_fix_num += 1
+                spuds_fix_num += 1
+            elif fixture.home == 47 and fixture.away == 42:
+                home = "spuds"
+                away = "arsenal"
+                afc_fix_num += 1
+                spuds_fix_num += 1
+            elif fixture.home == 42:
+                home = "arsenal"
+                away = "other"
+                afc_fix_num += 1
+            elif fixture.away == 42:
+                home = "other"
+                away = "arsenal"
+                afc_fix_num += 1
+            elif fixture.home == 47:
+                home = "spuds"
+                away = "other"
+                spuds_fix_num += 1
+            elif fixture.away == 47:
+                home = "other"
+                away = "spuds"
+                spuds_fix_num += 1
 
-    for i in range(remaining):
-        afc_points += 3 # possible bug, will overflow past the actual possible number of points right now since remaining = 6 but arsenal only have 4 left
-        spuds_points += 0
-        print(f"Iteration: {i} Main: {afc_points} Opponent: {spuds_points} Max Points Still Attainable: {(remaining - i) * 3} Perfect: {remaining * 3}")
-        if isTotts(afc_points, spuds_points, remaining - i):
-            # return i
-            return afc_fixtures[i].event_date
+            gh = int(fixture.goals_home)
+            ga = int(fixture.goals_away)
+
+            if gh > ga:
+                winner = home
+            elif gh < ga:
+                winner = away
+            elif gh == ga:
+                winner = "draw"
+
+            if winner == "arsenal":
+                afc_points += 3
+            if winner == "spuds":
+                spuds_points += 3
+            if winner == "draw":
+                if fixture.home == 42 or fixture.away == 42:
+                    afc_points += 1
+                if fixture.home == 47 or fixture.away == 47:
+                    spuds_points += 1
+
+            # print(f"afc fix num: {afc_fix_num}, afc pts: {afc_points}, rem. fix: {(38 - afc_fix_num)}, fix date: {fixture.event_date}, home: {fixture.home}, away: {fixture.away}")
+            # print(f"spuds fix num: {spuds_fix_num}, spuds pts: {spuds_points}, rem. fix: {(38 - spuds_fix_num)}, fix date: {fixture.event_date}, home: {fixture.home}, away: {fixture.away}")
+
+            # want min() here because we want the greatest amount *left* after subtracting from 38
+            totts_day: bool = afc_points - spuds_points > ((38 - min(afc_fix_num, spuds_fix_num)) * 3)
+            # print(totts_day)
+            # print("")
+            if totts_day:
+                return fixture.event_date
+                # print("skip")
+        # else:
+        #     print(fixture.event_date)
+
     return None
 
 
-@typechecked
-def predictedDate(main: int, opponent: int, fixtures: list) -> Optional[datetime.datetime]:
-    remaining = len(fixtures)
-    main_ppg = getPPG(main, fixtures)
-    opponent_ppg = getPPG(opponent, fixtures)
-    for i in range(remaining):
-        if i == 0:
-            print(f"Iteration: {i} Main: {main} Opponent: {opponent} Max Points Still Attainable: {(remaining - i) * 3} Perfect: {remaining * 3}")
-        else:
-            print(f"Iteration: {i} Main: {main_ppg+main} Opponent: {opponent_ppg+opponent} Max Points Still Attainable: {(remaining - i) * 3} Perfect: {remaining * 3}")
-        if isTotts(main_ppg + main, opponent_ppg + opponent, remaining - i):
-            # return i
-            # return fixtures[remaining - i].event_date
-            return datetime.datetime.now()
-        main_ppg += main / (38 - remaining)
-        opponent_ppg += opponent / (38 - remaining)
-    return None
+
+# @typechecked
+# # def earliestDate(afc_points: int, spuds_points: int, afc_fixtures: list, spuds_fixtures: list) -> Optional[int]:
+# # def earliestDate(afc_points: int, spuds_points: int, afc_future_fixtures: list, afc_past_fixtures: list, spuds_future_fixtures: list, spuds_past_fixtures: list,) -> Optional[datetime.datetime]:
+# def earliestDate(afc_points: int, spuds_points: int, afc_future_fixtures: list, afc_past_fixtures: list, spuds_future_fixtures: list, spuds_past_fixtures: list,) -> Optional[int]:
+#     last_played_afc_fix = afc_past_fixtures[0]
+#     last_played_spuds_fix = spuds_past_fixtures[0]
+
+#     # these get reversed because the orignal lists are sorted where 0 is the "current" fixture, and we need the last element instead
+#     afc_fixtures = list(reversed(afc_future_fixtures))
+#     # print([f.event_date for f in afc_fixtures])
+#     spuds_fixtures = list(reversed(spuds_future_fixtures))
+
+#     # note to self. list.insert() is an in-place operation
+#     afc_fixtures.insert(0, last_played_afc_fix)
+#     spuds_fixtures.insert(0, last_played_spuds_fix)
+
+#     afc_remaining = len(afc_fixtures)
+#     spuds_remaining = len(spuds_fixtures)
+#     remaining = max(afc_remaining, spuds_remaining)
+
+#     for i in range(remaining):
+#         afc_points += 3 # possible bug, will overflow past the actual possible number of points right now since remaining = 6 but arsenal only have 4 left
+#         spuds_points += 0
+#         print(f"Iteration: {i} Main: {afc_points} Opponent: {spuds_points} Max Points Still Attainable: {(remaining - i) * 3} Perfect: {remaining * 3}")
+#         if isTotts(afc_points, spuds_points, remaining - i):
+#             return i
+#             # return afc_fixtures[i].event_date
+#     return None
 
 
-# does not account for nld x2
-@typechecked
-def latestAllWinsDate(main: int, opponent: int, fixtures: list) -> Optional[datetime.datetime]:
-    remaining = len(fixtures)
-    for i in range(remaining):
-        print(f"Iteration: {i} Main: {main} Opponent: {opponent} Max Points Still Attainable: {(remaining - i) * 3} Perfect: {remaining * 3}")
-        if isTotts(main, opponent, remaining - i):
-            # return i
-            # return fixtures[remaining - i].event_date
-            return datetime.datetime.now()
-        main += 3
-        opponent += 3
-    return None
 
 
-# None (no st totts) (afc lose all, tot win all)
-@typechecked
-def afcStopWinningDate(main: int, opponent: int, fixtures: list) -> Optional[datetime.datetime]:
-    remaining = len(fixtures)
-    for i in range(remaining):
-        print(f"Iteration: {i} Main: {main} Opponent: {opponent} Max Points Still Attainable: {(remaining - i) * 3} Perfect: {remaining * 3}")
-        if isTotts(main, opponent, remaining - i):
-            # return i
-            # return fixtures[remaining - i].event_date
-            return datetime.datetime.now()
-        main += 0
-        opponent += 3
-    return None
+
+# @typechecked
+# def predictedDate(main: int, opponent: int, fixtures: list) -> Optional[datetime.datetime]:
+#     remaining = len(fixtures)
+#     main_ppg = getPPG(main, fixtures)
+#     opponent_ppg = getPPG(opponent, fixtures)
+#     for i in range(remaining):
+#         if i == 0:
+#             print(f"Iteration: {i} Main: {main} Opponent: {opponent} Max Points Still Attainable: {(remaining - i) * 3} Perfect: {remaining * 3}")
+#         else:
+#             print(f"Iteration: {i} Main: {main_ppg+main} Opponent: {opponent_ppg+opponent} Max Points Still Attainable: {(remaining - i) * 3} Perfect: {remaining * 3}")
+#         if isTotts(main_ppg + main, opponent_ppg + opponent, remaining - i):
+#             # return i
+#             # return fixtures[remaining - i].event_date
+#             return datetime.datetime.now()
+#         main_ppg += main / (38 - remaining)
+#         opponent_ppg += opponent / (38 - remaining)
+#     return None
+
+
+# # does not account for nld x2
+# @typechecked
+# def latestAllWinsDate(main: int, opponent: int, fixtures: list) -> Optional[datetime.datetime]:
+#     remaining = len(fixtures)
+#     for i in range(remaining):
+#         print(f"Iteration: {i} Main: {main} Opponent: {opponent} Max Points Still Attainable: {(remaining - i) * 3} Perfect: {remaining * 3}")
+#         if isTotts(main, opponent, remaining - i):
+#             # return i
+#             # return fixtures[remaining - i].event_date
+#             return datetime.datetime.now()
+#         main += 3
+#         opponent += 3
+#     return None
+
+
+# # None (no st totts) (afc lose all, tot win all)
+# @typechecked
+# def afcStopWinningDate(main: int, opponent: int, fixtures: list) -> Optional[datetime.datetime]:
+#     remaining = len(fixtures)
+#     for i in range(remaining):
+#         print(f"Iteration: {i} Main: {main} Opponent: {opponent} Max Points Still Attainable: {(remaining - i) * 3} Perfect: {remaining * 3}")
+#         if isTotts(main, opponent, remaining - i):
+#             # return i
+#             # return fixtures[remaining - i].event_date
+#             return datetime.datetime.now()
+#         main += 0
+#         opponent += 3
+#     return None
 
 
 @typechecked

@@ -3,60 +3,82 @@
 {% endblock %}
 {% block content %}
 
-<body style="background-color: #063672; color: #FFF;">
+<body>
+    <header>
+        <div>
+            <label>
+                <input id="lightdarkbutton" type="checkbox" value="light/dark">
+                <!-- <div
+                    class="bg-afc-gold peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-white">
+                </div> -->
+            </label>
+        </div>
+    </header>
     <br>
     <br>
-    <h1 class="text-center" style="margin-top: 20px; margin-bottom: 50px;">when is saint totteringham's day?</h1>
-    <div class="container text-center">
+    <h1 class="text-center" style="margin-top: 20px; margin-bottom: 50px;" id="lightdarktext">when is saint totteringham's day?</h1>
+    <br>
+    <br>
+    <div class="container text-center" id="lightdarktext">
         <div class="row">
+            <h3 class="text-center">is it saint totteringham's day?</h3>
             <div class="col" style="margin-bottom: 30px;" id="is_totts_col">
             </div>
         </div>
-        <!-- <br> -->
-        <!-- <br> -->
+        <br>
+        <br>
         <div class="row">
+            <h3 class="text-center">saint totteringham's day this year was</h3>
+            <h3 class="text-center">28 April 2024</h3>
+        </div>
+        <br>
+        <br>
+        <br>
+        <br>
+        <!-- <div class="row">
             <h3 class="text-center">earliest possible date</h3>
             <div class="col" style="margin-bottom: 20px;" id="earliest_col">
             </div>
         </div>
         <br>
-        <br>
-        <div class="row" style="background-color: #FFF; color: #000">
+        <br> -->
+        <div class="row">
             <h3 class="text-center">remaining North London Derbies</h3>
             <div class="col" style="margin-bottom: 30px;" id="nlds_col">
             </div>
         </div>
         <br>
         <br>
+        <br>
         <div class="row">
             <h3 class="text-center">maximum possible points remaining</h3>
             <div class="col" style="margin-top: 20px;" id="afc_remaining_col">
-                <h6>Arsenal</h6>
+                <h4>Arsenal</h4>
             </div>
             <div class="col" style="margin-top: 20px;" id="spuds_remaining_col">
-                <h6>Tottenham</h6>
+                <h4>Tottenham</h4>
             </div>
         </div>
-        <br>
-        <br>
-        <div class="row">
+        <!-- <br>
+        <br> -->
+        <!-- <div class="row">
             <h3 class="text-center">points per game</h3>
             <div class="col" style="margin-top: 20px;" id="afc_ppg_col">
-                <h6>Arsenal</h6>
+                <h6>points per game</h6>
             </div>
             <div class="col" style="margin-top: 20px;" id="spuds_ppg_col">
-                <h6>Tottenham</h6>
+                <h6>points per game</h6>
             </div>
-        </div>
+        </div> -->
         <br>
         <br>
         <div class="row">
             <h3 class="text-center">upcoming fixtures</h3>
             <div class="col" style="margin-top: 20px;" id="afc_future_col">
-                <h6>Arsenal</h6>
+                <h4>Arsenal</h4>
             </div>
             <div class="col" style="margin-top: 20px;" id="spuds_future_col">
-                <h6>Tottenham</h6>
+                <h4>Tottenham</h4>
             </div>
         </div>
         <br>
@@ -64,18 +86,18 @@
         <div class="row" style="margin-top: 50px;">
             <h3 class="text-center">completed fixtures</h3>
             <div class="col" style="margin-top: 20px;" id="afc_past_col">
-                <h6>Arsenal</h6>
+                <h4>Arsenal</h4>
             </div>
             <div class="col" style="margin-top: 20px;" id="spuds_past_col">
-                <h6>Tottenham</h6>
+                <h4>Tottenham</h4>
             </div>
         </div>
     </div>
 </body>
-
+<!-- <script src="static/darkmode.js"></script> -->
 
 <script>
-    window.onload = spawnFixtures(); remainingNLDs(); remainingPoints(); ppg(); earliest(); //isTotts();
+    window.onload = spawnFixtures(); remainingNLDs(); remainingPoints(); isTotts(); //ppg(); // earliest();
 
     function remainingPoints() {
         const afc_remaining = {{ afc_remaining_points }};
@@ -94,10 +116,10 @@
         afc_points_num.innerHTML = afc_remaining;
         spuds_points_num.innerHTML = spuds_remaining;
 
-        var afc_future_fix_num = document.createElement("h5");
-        var spuds_future_fix_num = document.createElement("h5");
-        afc_future_fix_num.innerHTML = `${afc_future_fix_len} matches remaining`;
-        spuds_future_fix_num.innerHTML = `${spuds_future_fix_len} matches remaining`;
+        var afc_future_fix_num = document.createElement("h6");
+        var spuds_future_fix_num = document.createElement("h6");
+        afc_future_fix_num.innerHTML = `${afc_future_fix_len} fixtures remaining`;
+        spuds_future_fix_num.innerHTML = `${spuds_future_fix_len} fixtures remaining`;
 
         afc_remaining_col.appendChild(afc_points_num);
         spuds_remaining_col.appendChild(spuds_points_num);
@@ -131,16 +153,20 @@
 
     function isTotts() {
         var is_totts = "{{ is_totts }}";
-        console.log*typeof(is_totts)
-        if (isTotts === true) {
+        if (Boolean(is_totts)) {
             is_totts_str = "YES!"
+            const is_totts_col = document.getElementById('is_totts_col');
+            var is_totts_h2 = document.createElement("h2");
+            is_totts_h2.innerHTML = is_totts_str;
+            is_totts_col.appendChild(is_totts_h2);
+
+            is_totts_h3_sub = document.createElement("h3");
+            is_totts_h3_sub.innerHTML = "(or, it was)";
+            is_totts_col.appendChild(is_totts_h3_sub);
             } else {
             is_totts_str = "NO"
         }
-        const is_totts_col = document.getElementById('is_totts_col');
-        var is_totts_h1 = document.createElement("h1");
-        is_totts_h1.innerHTML = is_totts_str;
-        is_totts_col.appendChild(is_totts_h1);
+
     }
 
     function remainingNLDs() {
@@ -165,7 +191,6 @@
             element.innerHTML = `${f.home_team.name} ${f.goals_home} - ${f.goals_away} ${f.away_team.name} | ${f.event_date} UTC`;
             if (f.winner == team) {
                 element.setAttribute("class", "badge text-bg-success rounded-pill");
-                // element.style.backgroundColor = "palegreen";
             } else if (f.winner == "draw") {
                 element.setAttribute("class", "badge text-bg-secondary rounded-pill");
             } else {
@@ -187,7 +212,6 @@
         var afc_future_fixs = {{ afc_future| tojson | safe }};
         var spuds_future_fixs = {{ spuds_future| tojson | safe }};
 
-        // console.log(afc_past_fixs);
         for (var index in afc_past_fixs) {
             f = afc_past_fixs[index];
             var new_p = document.createElement("p");
@@ -215,7 +239,7 @@
             var new_tr = new_afc_table_body.insertRow();
             var new_td = document.createElement("td");
             new_td.innerHTML = `${f.home_team.name} v. ${f.away_team.name} | ${f.event_date} UTC`;
-            new_td.setAttribute("style", "color: #FFF"); // white table
+            // new_td.setAttribute("style", "color: #FFF"); // white table
             new_tr.appendChild(new_td);
             new_afc_table_body.appendChild(new_tr);
         }
@@ -232,12 +256,13 @@
             var new_tr = new_spuds_table_body.insertRow();
             var new_td = document.createElement("td");
             new_td.innerHTML = `${f.home_team.name} v. ${f.away_team.name} | ${f.event_date} UTC`;
-            new_td.setAttribute("style", "color: #FFF"); // white table
+            // new_td.setAttribute("style", "color: #FFF"); // white table
             new_tr.appendChild(new_td);
             new_spuds_table_body.appendChild(new_tr);
             // afc_future_col.appendChild(document.createElement('br'));
         }
     }
+
 </script>
 
 {% endblock %}
