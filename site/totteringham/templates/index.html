@@ -3,101 +3,69 @@
 {% endblock %}
 {% block content %}
 
-<body>
+<body class="text-center items-center container min-w-fit overflow-x-scroll ml-36">
     <header>
-        <div>
-            <label>
-                <input id="lightdarkbutton" type="checkbox" value="light/dark">
-                <!-- <div
-                    class="bg-afc-gold peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-white">
-                </div> -->
-            </label>
-        </div>
+        <nav class="flex items-center justify-between flex-wrap pt-16">
+            <!-- <div class="justify-items-end"> -->
+                <div class="flex flex-shrink-0 mr-6 tracking-normal">
+                    <h1 class="font-bold text-3xl pr-2" id="lightdarktext">When is Saint Totteringham's Day?</h1>
+                </div>
+                <label class="relative inline-flex items-center cursor-pointer" for="lightdarkbutton">jack wilshere
+                    <input id="lightdarkbutton" type="checkbox" value="what do we think of tottenham" class="sr-only peer">
+                    <div
+                        class="w-11 h-6 bg-afc-blue peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[103px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-afc-gold ml-2">
+                    </div>
+                </label>
+            <!-- </div> -->
+        </nav>
     </header>
-    <br>
-    <br>
-    <h1 class="text-center" style="margin-top: 20px; margin-bottom: 50px;" id="lightdarktext">when is saint totteringham's day?</h1>
-    <br>
-    <br>
-    <div class="container text-center" id="lightdarktext">
-        <div class="row">
-            <h3 class="text-center">is it saint totteringham's day?</h3>
-            <div class="col" style="margin-bottom: 30px;" id="is_totts_col">
+
+    <div class="pt-24" id="lightdarktext">
+        <div>
+            <h3 class="text-xl">saint totteringham's day this year was</h3>
+            <h3 class="text-xl font-bold">28 April 2024</h3>
+        </div>
+        <div class="pt-16">
+            <h3 class="text-xl">remaining North London Derbies this season</h3>
+            <div id="nlds_col">
             </div>
         </div>
-        <br>
-        <br>
-        <div class="row">
-            <h3 class="text-center">saint totteringham's day this year was</h3>
-            <h3 class="text-center">28 April 2024</h3>
-        </div>
-        <br>
-        <br>
-        <br>
-        <br>
-        <!-- <div class="row">
-            <h3 class="text-center">earliest possible date</h3>
-            <div class="col" style="margin-bottom: 20px;" id="earliest_col">
-            </div>
-        </div>
-        <br>
-        <br> -->
-        <div class="row">
-            <h3 class="text-center">remaining North London Derbies</h3>
-            <div class="col" style="margin-bottom: 30px;" id="nlds_col">
-            </div>
-        </div>
-        <br>
-        <br>
-        <br>
-        <div class="row">
-            <h3 class="text-center">maximum possible points remaining</h3>
-            <div class="col" style="margin-top: 20px;" id="afc_remaining_col">
+
+        <h3 class="pt-16 text-xl">maximum possible points remaining</h3>
+        <div class="grid grid-cols-2 pt-6 text-lg">
+            <div id="afc_remaining_col">
                 <h4>Arsenal</h4>
             </div>
-            <div class="col" style="margin-top: 20px;" id="spuds_remaining_col">
+            <div id="spuds_remaining_col">
                 <h4>Tottenham</h4>
             </div>
         </div>
-        <!-- <br>
-        <br> -->
-        <!-- <div class="row">
-            <h3 class="text-center">points per game</h3>
-            <div class="col" style="margin-top: 20px;" id="afc_ppg_col">
-                <h6>points per game</h6>
+
+        <h3 class="pt-16 text-xl">upcoming fixtures</h3>
+        <div class="grid grid-cols-2 gap-14">
+            <div id="afc_future_col">
+                <h4 class="text-lg">Arsenal</h4>
             </div>
-            <div class="col" style="margin-top: 20px;" id="spuds_ppg_col">
-                <h6>points per game</h6>
-            </div>
-        </div> -->
-        <br>
-        <br>
-        <div class="row">
-            <h3 class="text-center">upcoming fixtures</h3>
-            <div class="col" style="margin-top: 20px;" id="afc_future_col">
-                <h4>Arsenal</h4>
-            </div>
-            <div class="col" style="margin-top: 20px;" id="spuds_future_col">
-                <h4>Tottenham</h4>
+            <div id="spuds_future_col">
+                <h4 class="text-lg">Tottenham</h4>
             </div>
         </div>
-        <br>
-        <br>
-        <div class="row" style="margin-top: 50px;">
-            <h3 class="text-center">completed fixtures</h3>
-            <div class="col" style="margin-top: 20px;" id="afc_past_col">
-                <h4>Arsenal</h4>
+
+        <h3 class="pt-16 text-xl pb-6">completed fixtures</h3>
+        <div class="grid grid-cols-2 text-s gap-28 min-w-48">
+            <div id="afc_past_col">
+                <!-- <h4 class="text-lg">Arsenal</h4> -->
             </div>
-            <div class="col" style="margin-top: 20px;" id="spuds_past_col">
-                <h4>Tottenham</h4>
+            <div id="spuds_past_col">
+                <!-- <h4 class="text-lg">Tottenham</h4> -->
             </div>
         </div>
+
     </div>
 </body>
-<!-- <script src="static/darkmode.js"></script> -->
 
 <script>
-    window.onload = spawnFixtures(); remainingNLDs(); remainingPoints(); isTotts(); //ppg(); // earliest();
+    window.onload = spawnFixtures(); remainingNLDs(); remainingPoints(); //isTotts(); //ppg(); // earliest();
 
     function remainingPoints() {
         const afc_remaining = {{ afc_remaining_points }};
@@ -128,51 +96,51 @@
         spuds_remaining_col.appendChild(spuds_future_fix_num);
     }
 
-    function ppg() {
-        const afc_ppg = {{ afc_ppg }};
-        const spuds_ppg = {{ spuds_ppg }};
-        const afc_ppg_col = document.getElementById('afc_ppg_col');
-        const spuds_ppg_col = document.getElementById('spuds_ppg_col');
-        var afc_ppg_num = document.createElement("h2");
-        var spuds_ppg_num = document.createElement("h2");
+    // function ppg() {
+    //     const afc_ppg = {{ afc_ppg }};
+    //     const spuds_ppg = {{ spuds_ppg }};
+    //     const afc_ppg_col = document.getElementById('afc_ppg_col');
+    //     const spuds_ppg_col = document.getElementById('spuds_ppg_col');
+    //     var afc_ppg_num = document.createElement("h2");
+    //     var spuds_ppg_num = document.createElement("h2");
 
-        afc_ppg_num.innerHTML = Math.round(afc_ppg * 100) / 100;
-        spuds_ppg_num.innerHTML = Math.round(spuds_ppg * 100) / 100;
+    //     afc_ppg_num.innerHTML = Math.round(afc_ppg * 100) / 100;
+    //     spuds_ppg_num.innerHTML = Math.round(spuds_ppg * 100) / 100;
 
-        afc_ppg_col.appendChild(afc_ppg_num)
-        spuds_ppg_col.appendChild(spuds_ppg_num)
-    }
+    //     afc_ppg_col.appendChild(afc_ppg_num)
+    //     spuds_ppg_col.appendChild(spuds_ppg_num)
+    // }
 
-    function earliest() {
-        var earliest_date = "{{ earliest_date }}";
-        const earliest_col = document.getElementById('earliest_col');
-        var earliest_h2 = document.createElement("h2");
-        earliest_h2.innerHTML = earliest_date;
-        earliest_col.appendChild(earliest_h2);
-    }
+    // function earliest() {
+    //     var earliest_date = "{{ earliest_date }}";
+    //     const earliest_col = document.getElementById('earliest_col');
+    //     var earliest_h2 = document.createElement("h2");
+    //     earliest_h2.innerHTML = earliest_date;
+    //     earliest_col.appendChild(earliest_h2);
+    // }
 
-    function isTotts() {
-        var is_totts = "{{ is_totts }}";
-        if (Boolean(is_totts)) {
-            is_totts_str = "YES!"
-            const is_totts_col = document.getElementById('is_totts_col');
-            var is_totts_h2 = document.createElement("h2");
-            is_totts_h2.innerHTML = is_totts_str;
-            is_totts_col.appendChild(is_totts_h2);
+    // function isTotts() {
+    //     var is_totts = "{{ is_totts }}";
+    //     if (Boolean(is_totts)) {
+    //         is_totts_str = "YES!"
+    //         const is_totts_col = document.getElementById('is_totts_col');
+    //         var is_totts_h2 = document.createElement("h2");
+    //         is_totts_h2.innerHTML = is_totts_str;
+    //         is_totts_col.appendChild(is_totts_h2);
 
-            is_totts_h3_sub = document.createElement("h3");
-            is_totts_h3_sub.innerHTML = "(or, it was)";
-            is_totts_col.appendChild(is_totts_h3_sub);
-            } else {
-            is_totts_str = "NO"
-        }
-
-    }
+    //         is_totts_h3_sub = document.createElement("h4");
+    //         is_totts_h3_sub.innerHTML = "(or, it was)";
+    //         is_totts_col.appendChild(is_totts_h3_sub);
+    //         } else {
+    //         is_totts_str = "NO"
+    //     }
+    // }
 
     function remainingNLDs() {
         const nld_matches = {{ nlds }};
         const nlds_col = document.getElementById('nlds_col');
         var nlds_h1 = document.createElement("h1");
+        nlds_h1.setAttribute("class", "text-2xl font-bold")
         if (nld_matches == 2) {
             nlds_h1.innerHTML = 0
         } else if (nld_matches == 1) {
@@ -186,15 +154,15 @@
     function getFixtureDecoration(fixtures, team, element) {
         if (['PST', 'CANC'].includes(f.status_short)) {
             element.innerHTML = `${f.home_team.name} v. ${f.away_team.name} | ${f.status_short}`;
-            element.setAttribute("class", "badge bg-warning rounded-pill text-dark");
+            element.setAttribute("class", "rounded-3xl bg-yellow-500 text-black");
         } else {
-            element.innerHTML = `${f.home_team.name} ${f.goals_home} - ${f.goals_away} ${f.away_team.name} | ${f.event_date} UTC`;
+            element.innerHTML = `${f.home_team.name} ${f.goals_home} - ${f.goals_away} ${f.away_team.name}` //+ "<br>" + `${f.event_date} UTC`;
             if (f.winner == team) {
-                element.setAttribute("class", "badge text-bg-success rounded-pill");
+                element.setAttribute("class", "rounded-3xl bg-green-600 text-white p-1");
             } else if (f.winner == "draw") {
-                element.setAttribute("class", "badge text-bg-secondary rounded-pill");
+                element.setAttribute("class", "rounded-3xl bg-gray-500 text-white p-1");
             } else {
-                element.setAttribute("class", "badge text-bg-danger rounded-pill");
+                element.setAttribute("class", "rounded-3xl bg-red-600 text-white p-1");
             }
         }
     }
@@ -228,15 +196,15 @@
             spuds_past_col.appendChild(document.createElement('br'));
         }
 
-
         var new_afc_table = document.createElement("table");
-        new_afc_table.setAttribute("class", "table table-striped");
+        new_afc_table.setAttribute("align", "center");
         new_afc_table_body = document.createElement("tbody");
         new_afc_table.appendChild(new_afc_table_body);
         afc_future_col.appendChild(new_afc_table);
         for (var index in afc_future_fixs) {
             f = afc_future_fixs[index];
             var new_tr = new_afc_table_body.insertRow();
+            new_tr.setAttribute("class", "odd:bg-white even:bg-gray-200")
             var new_td = document.createElement("td");
             new_td.innerHTML = `${f.home_team.name} v. ${f.away_team.name} | ${f.event_date} UTC`;
             // new_td.setAttribute("style", "color: #FFF"); // white table
@@ -244,16 +212,16 @@
             new_afc_table_body.appendChild(new_tr);
         }
 
-
         var new_spuds_table = document.createElement("table");
-        new_spuds_table.setAttribute("class", "table table-striped");
+        new_spuds_table.setAttribute("align", "center");
         var new_spuds_table_body = document.createElement("tbody");
-        // var new_blank_tr = new_spuds_table_body.insertRow(); // uncomment for alternating striped tables
+        // var new_blank_tr = new_spuds_table_body.insertRow(); // uncomment for alternating striped tables // bootstrap only
         new_spuds_table.appendChild(new_spuds_table_body);
         spuds_future_col.appendChild(new_spuds_table);
         for (var index in spuds_future_fixs) {
             f = spuds_future_fixs[index];
             var new_tr = new_spuds_table_body.insertRow();
+            new_tr.setAttribute("class", "odd:bg-white even:bg-gray-200")
             var new_td = document.createElement("td");
             new_td.innerHTML = `${f.home_team.name} v. ${f.away_team.name} | ${f.event_date} UTC`;
             // new_td.setAttribute("style", "color: #FFF"); // white table
@@ -264,5 +232,13 @@
     }
 
 </script>
+
+<!-- <script src="static/darkmode.js"></script> -->
+
+<!-- experimental confetti nonsense -->
+<!-- <script src="static/confetti.js"></script> -->
+
+<!-- jack wilshere mode -->
+<script src="static/thankyou.js"></script>
 
 {% endblock %}

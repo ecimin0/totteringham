@@ -37,8 +37,8 @@ function toggleLight() {
     lightdarkbutton.forEach(function (elem) {
         elem.checked = false;
     });
-    // document.documentElement.setAttribute("class", "bg-afc-gold");
-    document.body.style.backgroundColor = "#9C824A";
+    document.documentElement.setAttribute("class", "bg-afc-gold");
+    // document.body.style.backgroundColor = "#9C824A";
     lightdarktext.forEach(function (elem) {
         elem.classList.remove("text-afc-gold");
         elem.classList.add("text-afc-blue");
@@ -51,8 +51,8 @@ function toggleDark() {
     lightdarkbutton.forEach(function (elem) {
         elem.checked = true;
     });
-    // document.documentElement.setAttribute("class", "bg-afc-blue");
-    document.body.style.backgroundColor = "#063672";
+    document.documentElement.setAttribute("class", "bg-afc-blue");
+    // document.body.style.backgroundColor = "#063672";
     lightdarktext.forEach(function (elem) {
         elem.classList.remove("text-afc-blue");
         elem.classList.add("text-afc-gold");

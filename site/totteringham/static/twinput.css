@@ -1,0 +1,50 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.bg-afc-blue {
+    --tw-bg-opacity: 1;
+    background-color: #063672;
+}
+
+.bg-afc-red {
+    --tw-bg-opacity: 1;
+    background-color: #EF0107;
+}
+
+.bg-afc-dark-red {
+    --tw-bg-opacity: 1;
+    background-color: #DB0007;
+}
+
+.bg-afc-gold {
+    --tw-bg-opacity: 1;
+    background-color: #9C824A;
+}
+
+.bg-white {
+    --tw-bg-opacity: 1;
+    background-color: #fff;
+}
+
+
+
+.text-afc-blue {
+    --tw-text-opacity: 1;
+    color: #063672;
+}
+
+.text-afc-red {
+    --tw-text-opacity: 1;
+    color: #EF0107;
+}
+
+.text-afc-dark-red {
+    --tw-text-opacity: 1;
+    color: #DB0007;
+}
+
+.text-afc-gold {
+    --tw-text-opacity: 1;
+    color: #9C824A;
+}
