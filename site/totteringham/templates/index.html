@@ -3,17 +3,17 @@
 {% endblock %}
 {% block content %}
 
-<body class="text-center items-center container min-w-fit overflow-x-scroll ml-36">
+<body class="text-center items-center container min-w-fit overflow-x-scroll font-sans">
     <header>
         <nav class="flex items-center justify-between flex-wrap pt-16">
             <!-- <div class="justify-items-end"> -->
                 <div class="flex flex-shrink-0 mr-6 tracking-normal">
-                    <h1 class="font-bold text-3xl pr-2" id="lightdarktext">When is Saint Totteringham's Day?</h1>
+                    <h1 class="font-bold text-3xl pr-2 pl-36" id="lightdarktext">When is Saint Totteringham's Day?</h1>
                 </div>
-                <label class="relative inline-flex items-center cursor-pointer" for="lightdarkbutton">jack wilshere
+                <label class="relative inline-flex items-center cursor-pointer pr-36" for="lightdarkbutton">jack wilshere
                     <input id="lightdarkbutton" type="checkbox" value="what do we think of tottenham" class="sr-only peer">
                     <div
-                        class="w-11 h-6 bg-afc-blue peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[103px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-afc-gold ml-2">
+                        class="w-11 h-6 ml-2 bg-afc-blue peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[103px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-afc-gold">
                     </div>
                 </label>
             <!-- </div> -->
@@ -31,7 +31,7 @@
             </div>
         </div>
 
-        <h3 class="pt-16 text-xl">maximum possible points remaining</h3>
+        <!-- <h3 class="pt-16 text-xl">maximum possible points remaining</h3>
         <div class="grid grid-cols-2 pt-6 text-lg">
             <div id="afc_remaining_col">
                 <h4>Arsenal</h4>
@@ -39,33 +39,75 @@
             <div id="spuds_remaining_col">
                 <h4>Tottenham</h4>
             </div>
-        </div>
+        </div> -->
 
-        <h3 class="pt-16 text-xl">upcoming fixtures</h3>
-        <div class="grid grid-cols-2 gap-14">
+        <!-- <h3 class="pt-16 text-xl">upcoming fixtures</h3> -->
+        <div class="grid grid-cols-2 place-items-center items-start pt-16 pb-4">
             <div id="afc_future_col">
-                <h4 class="text-lg">Arsenal</h4>
+                <!-- <h4 class="text-lg">Arsenal</h4> -->
+                <table class="table-auto shadow-2xl rounded-3xl border-separate border-spacing-y-0.5 overflow-x-auto">
+                    <thead>
+                        <tr>
+                            <th class="text-xl py-3 bg-gradient-to-r from-afc-red via-afc-dark-red to-white rounded-t-3xl">Arsenal</th>
+                        </tr>
+                        <tr>
+                            <th class="text-lg py-3">{{ afc_remaining_points }} remaining points</th>
+                        </tr>
+                        <tr>
+                            <th class="text-lg py-3">upcoming fixtures</th>
+                        </tr>
+                    </thead>
+                    <tbody id="afc_upcoming_fix_body"></tbody>
+                    <thead>
+                        <tr>
+                            <th class="text-lg py-3">completed fixtures</th>
+                        </tr>
+                    </thead>
+                    <tbody id="afc_completed_fix_body"></tbody>
+                    </tbody>
+                </table>
             </div>
             <div id="spuds_future_col">
-                <h4 class="text-lg">Tottenham</h4>
+                <!-- <h4 class="text-lg">Tottenham</h4> -->
+                <table class="table-auto shadow-2xl rounded-3xl border-separate border-spacing-y-0.5 overflow-x-auto">
+                    <thead>
+                        <tr>
+                            <th class="text-xl py-3 bg-gradient-to-r from-[#132257] to-white rounded-t-3xl ">Tottenham</th>
+                        </tr>
+                        <tr>
+                            <th class="text-lg py-3">{{ spuds_remaining_points }} remaining points</th>
+                        </tr>
+                        <tr>
+                            <th class="text-lg py-3">upcoming fixtures</th>
+                        </tr>
+                    </thead>
+                    <tbody id="spuds_upcoming_fix_body"></tbody>
+                    <thead>
+                        <tr>
+                            <th class="text-lg py-3">completed fixtures</th>
+                        </tr>
+                    </thead>
+                    <tbody id="spuds_completed_fix_body"></tbody>
+                    </tbody>
+                </table>
             </div>
         </div>
 
-        <h3 class="pt-16 text-xl pb-6">completed fixtures</h3>
-        <div class="grid grid-cols-2 text-s gap-28 min-w-48">
+        <!-- <h3 class="pt-16 text-xl pb-6">completed fixtures</h3>
+        <div class="grid grid-cols-2 text-s gap-28 min-w-48 pl-24 pr-24">
             <div id="afc_past_col">
-                <!-- <h4 class="text-lg">Arsenal</h4> -->
+                <h4 class="text-lg">Arsenal</h4>
             </div>
             <div id="spuds_past_col">
-                <!-- <h4 class="text-lg">Tottenham</h4> -->
+                <h4 class="text-lg">Tottenham</h4>
             </div>
-        </div>
+        </div> -->
 
     </div>
 </body>
 
 <script>
-    window.onload = spawnFixtures(); remainingNLDs(); remainingPoints(); //isTotts(); //ppg(); // earliest();
+    window.onload = spawnFixtures(); remainingNLDs(); //remainingPoints(); //isTotts(); //ppg(); // earliest();
 
     function remainingPoints() {
         const afc_remaining = {{ afc_remaining_points }};
@@ -152,83 +194,185 @@
     }
 
     function getFixtureDecoration(fixtures, team, element) {
-        if (['PST', 'CANC'].includes(f.status_short)) {
+        var fixdate = Date.parse(f.event_date);
+        // console.log(fixdate > Date.now());
+        // console.log(fixdate);
+        // console.log(Date.now());
+
+        if (fixdate > Date.now() ) {
+            element.innerHTML = `${f.home_team.name} v. ${f.away_team.name} | ${f.event_date} UTC`;
+            element.setAttribute("class", "odd:bg-white even:bg-gray-200");
+        } else if (['PST', 'CANC'].includes(f.status_short)) {
             element.innerHTML = `${f.home_team.name} v. ${f.away_team.name} | ${f.status_short}`;
-            element.setAttribute("class", "rounded-3xl bg-yellow-500 text-black");
+            element.setAttribute("class", "bg-yellow-500 text-black");
         } else {
-            element.innerHTML = `${f.home_team.name} ${f.goals_home} - ${f.goals_away} ${f.away_team.name}` //+ "<br>" + `${f.event_date} UTC`;
+            element.innerHTML = `${f.home_team.name} ${f.goals_home} - ${f.goals_away} ${f.away_team.name} | ${f.event_date} UTC`;
             if (f.winner == team) {
-                element.setAttribute("class", "rounded-3xl bg-green-600 text-white p-1");
+                element.setAttribute("class", "bg-green-600 text-white");
             } else if (f.winner == "draw") {
-                element.setAttribute("class", "rounded-3xl bg-gray-500 text-white p-1");
+                element.setAttribute("class", "bg-gray-500 text-white");
             } else {
-                element.setAttribute("class", "rounded-3xl bg-red-600 text-white p-1");
+                element.setAttribute("class", "bg-red-600 text-white");
             }
         }
     }
 
     function spawnFixtures() {
+        var afc_future_fixs = {{ afc_future | tojson | safe }};
+        var spuds_future_fixs = {{ spuds_future | tojson | safe }};
+        var afc_past_fixs = {{ afc_past | tojson | safe}};
+        var spuds_past_fixs = {{ spuds_past | tojson | safe }};
+
         const afc_future_col = document.getElementById('afc_future_col');
         const spuds_future_col = document.getElementById('spuds_future_col');
 
-        const afc_past_col = document.getElementById('afc_past_col');
-        const spuds_past_col = document.getElementById('spuds_past_col');
-
-        var afc_past_fixs = {{ afc_past| tojson | safe}};
-        var spuds_past_fixs = {{ spuds_past| tojson | safe }};
-
-        var afc_future_fixs = {{ afc_future| tojson | safe }};
-        var spuds_future_fixs = {{ spuds_future| tojson | safe }};
-
-        for (var index in afc_past_fixs) {
-            f = afc_past_fixs[index];
-            var new_p = document.createElement("p");
-            getFixtureDecoration(f, "Arsenal", new_p);
-            afc_past_col.appendChild(new_p);
-            afc_past_col.appendChild(document.createElement('br'));
-        }
-
-        for (var index in spuds_past_fixs) {
-            f = spuds_past_fixs[index];
-            var new_p = document.createElement("p");
-            getFixtureDecoration(f, "Tottenham", new_p);
-            spuds_past_col.appendChild(new_p);
-            spuds_past_col.appendChild(document.createElement('br'));
-        }
-
-        var new_afc_table = document.createElement("table");
-        new_afc_table.setAttribute("align", "center");
-        new_afc_table_body = document.createElement("tbody");
-        new_afc_table.appendChild(new_afc_table_body);
-        afc_future_col.appendChild(new_afc_table);
+        const afc_upcoming_table_body = document.getElementById('afc_upcoming_fix_body');
         for (var index in afc_future_fixs) {
+            // console.log(index);
             f = afc_future_fixs[index];
-            var new_tr = new_afc_table_body.insertRow();
-            new_tr.setAttribute("class", "odd:bg-white even:bg-gray-200")
+            var new_tr = afc_upcoming_table_body.insertRow();
+            getFixtureDecoration(f, "Arsenal", new_tr);
+            // new_tr.setAttribute("class", "odd:bg-white even:bg-gray-200")
             var new_td = document.createElement("td");
-            new_td.innerHTML = `${f.home_team.name} v. ${f.away_team.name} | ${f.event_date} UTC`;
-            // new_td.setAttribute("style", "color: #FFF"); // white table
+            // new_td.innerHTML = `${f.home_team.name} v. ${f.away_team.name} | ${f.event_date} UTC`;
+            // new_td.setAttribute("class", "");
             new_tr.appendChild(new_td);
-            new_afc_table_body.appendChild(new_tr);
-        }
-
-        var new_spuds_table = document.createElement("table");
-        new_spuds_table.setAttribute("align", "center");
-        var new_spuds_table_body = document.createElement("tbody");
-        // var new_blank_tr = new_spuds_table_body.insertRow(); // uncomment for alternating striped tables // bootstrap only
-        new_spuds_table.appendChild(new_spuds_table_body);
-        spuds_future_col.appendChild(new_spuds_table);
-        for (var index in spuds_future_fixs) {
-            f = spuds_future_fixs[index];
-            var new_tr = new_spuds_table_body.insertRow();
-            new_tr.setAttribute("class", "odd:bg-white even:bg-gray-200")
-            var new_td = document.createElement("td");
-            new_td.innerHTML = `${f.home_team.name} v. ${f.away_team.name} | ${f.event_date} UTC`;
-            // new_td.setAttribute("style", "color: #FFF"); // white table
-            new_tr.appendChild(new_td);
-            new_spuds_table_body.appendChild(new_tr);
+            afc_upcoming_table_body.appendChild(new_tr);
             // afc_future_col.appendChild(document.createElement('br'));
         }
+
+        const afc_completed_table_body = document.getElementById('afc_completed_fix_body');
+        for (var index in afc_past_fixs) {
+            // if (index == (afc_past_fixs.length - 1)) {
+            //     new_tr.setAttribute("class", "rounded-b-3xl");
+            // }
+            // console.log(index, (afc_past_fixs.length - 1));
+            f = afc_past_fixs[index];
+            var new_tr = afc_completed_table_body.insertRow();
+            getFixtureDecoration(f, "Arsenal", new_tr);
+            // new_tr.setAttribute("class", "odd:bg-white even:bg-gray-200")
+            var new_td = document.createElement("td");
+            // new_td.innerHTML = `${f.home_team.name} v. ${f.away_team.name} | ${f.event_date} UTC`;
+            // new_td.setAttribute("class", "");
+            new_tr.appendChild(new_td);
+            afc_completed_table_body.appendChild(new_tr);
+            // afc_future_col.appendChild(document.createElement('br'));
+        }
+
+        const spuds_upcoming_table_body = document.getElementById('spuds_upcoming_fix_body');
+        for (var index in spuds_future_fixs) {
+            // console.log(index);
+            f = spuds_future_fixs[index];
+            var new_tr = spuds_upcoming_table_body.insertRow();
+            getFixtureDecoration(f, "Arsenal", new_tr);
+            // new_tr.setAttribute("class", "odd:bg-white even:bg-gray-200")
+            var new_td = document.createElement("td");
+            // new_td.innerHTML = `${f.home_team.name} v. ${f.away_team.name} | ${f.event_date} UTC`;
+            // new_td.setAttribute("class", "");
+            new_tr.appendChild(new_td);
+            spuds_upcoming_table_body.appendChild(new_tr);
+            // spuds_future_col.appendChild(document.createElement('br'));
+        }
+
+        const spuds_completed_table_body = document.getElementById('spuds_completed_fix_body');
+        for (var index in spuds_past_fixs) {
+            // console.log(index);
+            f = spuds_past_fixs[index];
+            var new_tr = spuds_completed_table_body.insertRow();
+            getFixtureDecoration(f, "Tottenham", new_tr);
+            // new_tr.setAttribute("class", "odd:bg-white even:bg-gray-200")
+            var new_td = document.createElement("td");
+            // new_td.innerHTML = `${f.home_team.name} v. ${f.away_team.name} | ${f.event_date} UTC`;
+            // new_td.setAttribute("class", "");
+            new_tr.appendChild(new_td);
+            spuds_completed_table_body.appendChild(new_tr);
+            // spuds_future_col.appendChild(document.createElement('br'));
+        }
+
+
+
+
+
+
+
+
+
+        // const afc_past_col = document.getElementById('afc_past_col');
+        // const spuds_past_col = document.getElementById('spuds_past_col');
+
+        // var afc_past_fixs = {{ afc_past | tojson | safe}};
+        // var spuds_past_fixs = {{ spuds_past | tojson | safe }};
+
+        // // var afc_future_fixs = {{ afc_future | tojson | safe }};
+        // // var spuds_future_fixs = {{ spuds_future | tojson | safe }};
+
+        // for (var index in afc_past_fixs) {
+        //     f = afc_past_fixs[index];
+        //     var new_p = document.createElement("p");
+        //     getFixtureDecoration(f, "Arsenal", new_p);
+        //     afc_past_col.appendChild(new_p);
+        //     afc_past_col.appendChild(document.createElement('br'));
+        // }
+
+        // for (var index in spuds_past_fixs) {
+        //     f = spuds_past_fixs[index];
+        //     var new_p = document.createElement("p");
+        //     getFixtureDecoration(f, "Tottenham", new_p);
+        //     spuds_past_col.appendChild(new_p);
+        //     spuds_past_col.appendChild(document.createElement('br'));
+        // }
+
+        // // var new_afc_table = document.createElement("table");
+        // // new_afc_table.setAttribute("align", "center");
+        // // new_afc_table.setAttribute("class", "table-auto");
+        
+        // // new_afc_table_upcoming_head = document.createElement("thead");
+        // // new_afc_table_upcoming_label = new_afc_table_upcoming_head.insertRow();
+        // // new_afc_table_upcoming_label_th = document.createElement("th");
+        // // new_afc_table_upcoming_label_th.innerHTML = "upcoming fixtures";
+        // // new_afc_table_upcoming_label.appendChild(new_afc_table_upcoming_label_th);
+        // // new_afc_table.appendChild(new_afc_table_upcoming_head);
+
+        // // new_afc_table_body = document.createElement("tbody");
+        // // new_afc_table.appendChild(new_afc_table_body);
+        // // afc_future_col.appendChild(new_afc_table);
+
+        // // new_afc_table_completed_head = document.createElement("thead");
+        // // new_afc_table_completed_label = new_afc_table_completed_head.insertRow();
+        // // new_afc_table_completed_label_th = document.createElement("th");
+        // // new_afc_table_completed_label_th.innerHTML = "completed fixtures";
+        // // new_afc_table_completed_label.appendChild(new_afc_table_completed_label_th);
+        // // new_afc_table.appendChild(new_afc_table_completed_head);
+
+        // // for (var index in afc_past_fixs) {
+        // //     f = afc_past_fixs[index];
+        // //     var new_tr = new_afc_table_body.insertRow();
+        // //     getFixtureDecoration(f, "Arsenal", new_tr);
+        // //     var new_td = document.createElement("td");
+        // //     new_tr.appendChild(new_td);
+        // //     new_afc_table_body.appendChild(new_tr);
+        // // }
+
+
+        
+        
+        // var new_spuds_table = document.createElement("table");
+        // new_spuds_table.setAttribute("align", "center");
+        // var new_spuds_table_body = document.createElement("tbody");
+        // // var new_blank_tr = new_spuds_table_body.insertRow(); // uncomment for alternating striped tables // bootstrap only
+        // new_spuds_table.appendChild(new_spuds_table_body);
+        // spuds_future_col.appendChild(new_spuds_table);
+        // for (var index in spuds_future_fixs) {
+        //     f = spuds_future_fixs[index];
+        //     var new_tr = new_spuds_table_body.insertRow();
+        //     new_tr.setAttribute("class", "odd:bg-white even:bg-gray-200")
+        //     var new_td = document.createElement("td");
+        //     new_td.innerHTML = `${f.home_team.name} v. ${f.away_team.name} | ${f.event_date} UTC`;
+        //     // new_td.setAttribute("style", "color: #FFF"); // white table
+        //     new_tr.appendChild(new_td);
+        //     new_spuds_table_body.appendChild(new_tr);
+        //     // afc_future_col.appendChild(document.createElement('br'));
+        // }
     }
 
 </script>
